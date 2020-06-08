@@ -2,7 +2,6 @@ import pygame
 import random
 from lib import *
 
-
 def Juego(ventana):
     ventana.fill(NEGRO)
     pygame.mixer.init(44100, -16, 2, 2048)

@@ -1,0 +1,25 @@
+[info]
+fondo: image_lvl1.png
+mapa: -----------------------
+      m.....................m
+      m.....................m
+      m.....................m
+      m.....................m
+      m.J...................m
+      mmmmmmmmmmmmmmmmmmmmmmm
+      #######################
+
+[m]
+tipo: Muro
+
+[.]
+tipo: Mundo
+
+[#]
+tipo: DeadRock
+
+[-]
+tipo: Cielo
+
+[J]
+tipo: Jugador
