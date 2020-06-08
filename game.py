@@ -4,6 +4,7 @@ from lib import *
 
 
 def Juego(ventana):
+    ventana.fill(NEGRO)
     pygame.mixer.init(44100, -16, 2, 2048)
 
 
@@ -21,15 +22,13 @@ def Juego(ventana):
                 fin = True
             if event.type ==pygame.KEYDOWN:
                 if event.key == pygame.K_DOWN or event.key == pygame.K_s:
-
+                    pass
                 if event.key == pygame.K_UP or event.key == pygame.K_w:
-
-
+                    pass
                 if event.key == pygame.K_RIGHT or event.key == pygame.K_d:
-
-
+                    pass
                 if event.key == pygame.K_LEFT or event.key == pygame.K_a:
-
+                    pass
 
 
         #Dibujado
@@ -41,6 +40,7 @@ def Juego(ventana):
     FinJuego(ventana)
 
 def FinJuego(ventana):
+    ventana.fill(NEGRO)
     pygame.font.init()
     pygame.mixer.init(44100, -16, 2, 2048)
     #musica = pygame.mixer.Sound('sonidos/final.wav')
@@ -83,6 +83,7 @@ def FinJuego(ventana):
         Juego(ventana)
 
 def Menu(ventana):
+    ventana.fill(NEGRO)
     pygame.font.init()
     pygame.mixer.init(44100, -16, 2, 2048)
     fuente = pygame.font.Font(None, 40)
@@ -135,6 +136,7 @@ def Menu(ventana):
         InfoJuego(ventana)
 
 def InfoJuego(ventana):
+    ventana.fill(NEGRO)
     pygame.font.init()
     pygame.mixer.init(44100, -16, 2, 2048)
     fuente = pygame.font.Font(None, 40)

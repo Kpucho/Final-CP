@@ -1,5 +1,6 @@
+"""             Constantes                      """
 ANCHO = 800
-ALTO = 600
+ALTO = 704
 
 #Colores
 NEGRO=[0,0,0]
@@ -13,3 +14,10 @@ LIGHT_ROJO = [255,55,55]
 LIGHT_PINK = [212, 159, 183]
 
 FPS = 40
+
+Titulo = 'Un nombre mamado'
+
+"""             Funciones cracks                """
+def draw_text(msj, font, color, surface, cord):
+    object = font.render(msj, True, color)
+    surface.blit(object, cord)
