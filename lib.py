@@ -1,6 +1,6 @@
 """             Constantes                      """
-ANCHO = 800
-ALTO = 704
+ANCHO = 960
+ALTO = 640
 
 #Colores
 NEGRO=[0,0,0]
@@ -14,6 +14,9 @@ LIGHT_ROJO = [255,55,55]
 LIGHT_PINK = [212, 159, 183]
 
 FPS = 40
+"""             Carga de mundos                 """
+Mundo1 = []
+
 
 Titulo = 'Un nombre mamado'
 

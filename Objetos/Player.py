@@ -1,12 +1,14 @@
 import pygame
-
+ROJO=[255,0,0]
 class Player(pygame.sprite.Sprite):
 
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
         self.animacion = 0
         self.dir = 1
-        self.image = DIR[self.animacion]
+        #self.image = DIR[self.animacion]
+        self.image = pygame.Surface([40,40])
+        self.image.fill(ROJO)
         self.rect = self.image.get_rect()
         self.rect.x = 100
         self.rect.y = ALTO/2
