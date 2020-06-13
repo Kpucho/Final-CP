@@ -5,28 +5,44 @@ mapa: --------------------------------------------------------------------
       m..................................................................m
       m..................................................................m
       m...................................mm.............................m
-      m................................mm................................m
-      m................................mm................................m
+      m...t............................mm................................m
+      m...p............................mm................................m
+      ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss
       mmmmmmmmmmmmmmmmmmmmmmmmmm..mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm..mmmmmm
       mmmmmmmmmmmmmmmmmmmmmmmmmm..mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm..mmmmmm
-      ####################################################################
 
 [m]
 tipo: Muro
+px: 8
+py: 12
 colision: 1
 
 [.]
 tipo: Mundo
-colision: 0
-
-[#]
-tipo: DeadRock
+px:
+py:
 colision: 0
 
 [-]
 tipo: Cielo
+px:
+py:
 colision: 0
 
-[J]
-tipo: Jugador
-colision: 0
+[s]
+tipo: Suelo
+px: 7
+py: 8
+colision: 1
+
+[t]
+tipo: supuerta
+px: 9
+py: 3
+colision: 1
+
+[p]
+tipo: Puerta
+px: 9
+py: 4
+colision: 1

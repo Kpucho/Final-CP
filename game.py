@@ -1,6 +1,7 @@
 import pygame
 import random
 from lib import *
+from Objetos import *
 
 def Juego(ventana):
     ventana.fill(NEGRO)
