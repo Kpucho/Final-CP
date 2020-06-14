@@ -1,12 +1,29 @@
 import pygame
 import random
+import ConfigParser
 from lib import *
 from Objetos import *
+
+archivo = ConfigParser.ConfigParser()
 
 def Tutorial(ventana):
     ventana.fill(NEGRO)
     pygame.mixer.init(44100, -16, 2, 2048)
+    archivo.read('Mapas/Tutorial.map')
 
+    """Creacion del mundo"""
+    j=0
+    for fila in Mapa1:
+        i=0
+        for c in fila:
+            type = string(archivo.get(c,'tipo'))
+            px=int(archivo.get(c,'px'))
+            py=int(archivo.get(c,'px'))
+            col=int(archivo.get(c,'colision'))
+            if col != 0:
+                ventana.blit(Mundo1[px][py],[64*i,64*j])
+            i+=1
+        j+=1
 
     #fondojuego = pygame.image.load('carmap.png')
     #musica = pygame.mixer.Sound('sonidos/juego.wav')
@@ -16,7 +33,7 @@ def Tutorial(ventana):
     fin = False
     #musica.play(-1)
     """Eventos"""
-    while not fin and (not fin_juego):
+    while not fin and (not NextLvl):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 fin = True
@@ -37,10 +54,99 @@ def Tutorial(ventana):
         reloj.tick(FPS)
 
 def Lvl1(ventana):
-    pass
+    ventana.fill(NEGRO)
+    pygame.mixer.init(44100, -16, 2, 2048)
+    archivo.read('Mapas/Level1.map')
+
+    """Creacion del mundo"""
+    j=0
+    for fila in Mapa1:
+        i=0
+        for c in fila:
+            type = string(archivo.get(c,'tipo'))
+            px=int(archivo.get(c,'px'))
+            py=int(archivo.get(c,'px'))
+            col=int(archivo.get(c,'colision'))
+            if col != 0:
+                ventana.blit(Mundo1[px][py],[64*i,64*j])
+            i+=1
+        j+=1
+
+    #fondojuego = pygame.image.load('carmap.png')
+    #musica = pygame.mixer.Sound('sonidos/juego.wav')
+
+    reloj = pygame.time.Clock()
+    fin_juego = False
+    fin = False
+    #musica.play(-1)
+    """Eventos"""
+    while not fin and (not NextLvl):
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                fin = True
+            if event.type ==pygame.KEYDOWN:
+                if event.key == pygame.K_DOWN or event.key == pygame.K_s:
+                    pass
+                if event.key == pygame.K_UP or event.key == pygame.K_w:
+                    pass
+                if event.key == pygame.K_RIGHT or event.key == pygame.K_d:
+                    pass
+                if event.key == pygame.K_LEFT or event.key == pygame.K_a:
+                    pass
+
+
+        #Dibujado
+        ventana.fill(NEGRO)
+        pygame.display.flip()
+        reloj.tick(FPS)
 
 def Lvl2(ventana):
-    pass
+    ventana.fill(NEGRO)
+    pygame.mixer.init(44100, -16, 2, 2048)
+    archivo.read('Mapas/Level2.map')
+
+    """Creacion del mundo"""
+    j=0
+    for fila in Mapa1:
+        i=0
+        for c in fila:
+            type = string(archivo.get(c,'tipo'))
+            px=int(archivo.get(c,'px'))
+            py=int(archivo.get(c,'px'))
+            col=int(archivo.get(c,'colision'))
+            if col != 0:
+                ventana.blit(Mundo1[px][py],[64*i,64*j])
+            i+=1
+        j+=1
+
+    #fondojuego = pygame.image.load('carmap.png')
+    #musica = pygame.mixer.Sound('sonidos/juego.wav')
+
+    reloj = pygame.time.Clock()
+    fin_juego = False
+    fin = False
+    #musica.play(-1)
+    """Eventos"""
+    while not fin and (not NextLvl):
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                fin = True
+            if event.type ==pygame.KEYDOWN:
+                if event.key == pygame.K_DOWN or event.key == pygame.K_s:
+                    pass
+                if event.key == pygame.K_UP or event.key == pygame.K_w:
+                    pass
+                if event.key == pygame.K_RIGHT or event.key == pygame.K_d:
+                    pass
+                if event.key == pygame.K_LEFT or event.key == pygame.K_a:
+                    pass
+
+
+        #Dibujado
+        ventana.fill(NEGRO)
+        pygame.display.flip()
+        reloj.tick(FPS)
+
 
 def FinJuego(ventana):
     ventana.fill(NEGRO)

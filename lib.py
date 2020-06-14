@@ -39,10 +39,11 @@ def draw_Mundo1(ventana):
     for fila in Mapa1:
         i=0
         for c in fila:
+            type = string(archivo.get(c,'tipo'))
             px=int(archivo.get(c,'px'))
             py=int(archivo.get(c,'px'))
             col=int(archivo.get(c,'colision'))
             if col != 0:
-                ventana.blit(m[px][py],[64*i,64*j])
+                ventana.blit(Mundo1[px][py],[64*i,64*j])
             i+=1
         j+=1

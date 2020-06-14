@@ -1,12 +1,12 @@
 [info]
 fondo: image_lvl1.png
-mapa: --------------------------------------------------------------------
+mapa: mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm
       m..................................................................m
       m..................................................................m
       m..................................................................m
       m...................................mm.............................m
-      m...t............................mm................................m
-      m...p............................mm................................m
+      m...t............................mm.............................t..m
+      m...p............................mm.............................p..m
       ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss
       mmmmmmmmmmmmmmmmmmmmmmmmmm..mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm..mmmmmm
       mmmmmmmmmmmmmmmmmmmmmmmmmm..mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm..mmmmmm
@@ -46,3 +46,9 @@ tipo: Puerta
 px: 9
 py: 4
 colision: 1
+
+[#]
+tipo: plataforma
+px: 4
+py: 7
+colision:1
