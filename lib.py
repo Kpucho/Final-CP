@@ -1,6 +1,6 @@
 """             Constantes                      """
-ANCHO = 800
-ALTO = 704
+ANCHO = 1024
+ALTO = 640
 
 #Colores
 NEGRO=[0,0,0]
