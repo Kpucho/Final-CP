@@ -43,6 +43,6 @@ def draw_Mundo1(ventana):
             py=int(archivo.get(c,'px'))
             col=int(archivo.get(c,'colision'))
             if col != 0:
-                ventana.blit(m[px][py],[32*i,32*j])
+                ventana.blit(m[px][py],[64*i,64*j])
             i+=1
         j+=1

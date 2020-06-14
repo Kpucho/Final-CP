@@ -3,7 +3,7 @@ import random
 from lib import *
 from Objetos import *
 
-def Juego(ventana):
+def Tutorial(ventana):
     ventana.fill(NEGRO)
     pygame.mixer.init(44100, -16, 2, 2048)
 
@@ -36,8 +36,11 @@ def Juego(ventana):
         pygame.display.flip()
         reloj.tick(FPS)
 
-    #musica.stop()
-    FinJuego(ventana)
+def Lvl1(ventana):
+    pass
+
+def Lvl2(ventana):
+    pass
 
 def FinJuego(ventana):
     ventana.fill(NEGRO)
@@ -80,7 +83,7 @@ def FinJuego(ventana):
 
     if not fin:
         #musica.stop()
-        Juego(ventana)
+        SelectWorld(ventana)
 
 def Menu(ventana):
     ventana.fill(NEGRO)
@@ -131,9 +134,66 @@ def Menu(ventana):
 
     #musica.stop()
     if (previo):
-        Juego(ventana)
+        SelectWorld(ventana)
     if (info_juego):
         InfoJuego(ventana)
+
+def SelectWorld(ventana):
+    ventana.fill(NEGRO)
+    pygame.font.init()
+    pygame.mixer.init(44100, -16, 2, 2048)
+    fuente = pygame.font.Font(None, 40)
+    #fondo  = pygame.image.load('images/fondo.png')
+    #musica = pygame.mixer.Sound('sonidos/menu.wav')
+    fin = False
+    Tuto = False
+    Lvl1 = False
+    Lvl2 = False
+    click = False
+    #musica.play(-1)
+    while (not fin) and (not Tuto) and (not Lvl1) and (not Lvl2):
+
+        pygame.display.flip()
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                fin = True
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if event.button == 1:
+                    click = True
+
+        #ventana.blit(fondo, [0,0])
+        mx, my = pygame.mouse.get_pos()
+        draw_text(Titulo, fuente, BLANCO, ventana, [300, 50])
+        boton1 = pygame.Rect(300, 150, 220, 50)
+        boton2 = pygame.Rect(300, 250, 220, 50)
+        boton3 = pygame.Rect(300, 350, 220, 50)
+
+        if boton1.collidepoint((mx, my)):
+            if click:
+                Tuto = True
+        if boton2.collidepoint((mx, my)):
+            if click:
+                Lvl1 = True
+        if boton3.collidepoint((mx, my)):
+            if click:
+                Lvl2 = True
+
+        pygame.draw.rect(ventana, LIGHT_PINK, boton1)
+        draw_text('Tutorial', fuente, BLANCO, ventana, [370, 160])
+        pygame.draw.rect(ventana, LIGHT_PINK, boton2)
+        draw_text('Nivel 1', fuente, BLANCO, ventana, [370, 260])
+        pygame.draw.rect(ventana, LIGHT_PINK, boton3)
+        draw_text('Nivel 2', fuente, BLANCO, ventana, [370, 360])
+
+        click = False
+
+    #musica.stop()
+    if (Tuto==True):
+        Tutorial(ventana)
+    elif (Lvl1 == True):
+        Lvl1(ventana)
+    elif (Lvl2 == True):
+        Lvl2(ventana)
 
 def InfoJuego(ventana):
     ventana.fill(NEGRO)
@@ -179,7 +239,7 @@ def InfoJuego(ventana):
 
     #musica.stop()
     if (iniciar):
-        Juego(ventana)
+        SelectWorld(ventana)
 
 if __name__ == '__main__':
     ventana = pygame.display.set_mode([ANCHO,ALTO])
