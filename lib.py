@@ -1,3 +1,4 @@
+import pygame
 """             Constantes                      """
 Titulo = 'Un nombre mamado'
 ANCHO = 960

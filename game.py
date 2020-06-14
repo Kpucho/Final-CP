@@ -11,6 +11,10 @@ def Tutorial(ventana):
     pygame.mixer.init(44100, -16, 2, 2048)
     archivo.read('Mapas/Tutorial.map')
 
+    Muros = pygame.sprite.Group()
+    Suelo = pygame.sprite.Group()
+    Plataformas = pygame.sprite.Group()
+
     """Creacion del mundo"""
     j=0
     for fila in Mapa1:
@@ -21,7 +25,15 @@ def Tutorial(ventana):
             py=int(archivo.get(c,'px'))
             col=int(archivo.get(c,'colision'))
             if col != 0:
-                ventana.blit(Mundo1[px][py],[64*i,64*j])
+                if (type == 'Muro'):
+                    Objeto = Muro([64*i,64*j],Mundo1[px][py])
+                    Muros.add(Objeto)
+                elif (type == 'Suelo'):
+                    Objeto = Suelo([64*i,64*j],Mundo1[px][py])
+                    Suelo.add(Objeto)
+                elif (type == 'Plataforma'):
+                    Objeto = Plataforma([64*i,64*j],Mundo1[px][py])
+                    Plataformas.add(Objeto)
             i+=1
         j+=1
 
@@ -58,6 +70,10 @@ def Lvl1(ventana):
     pygame.mixer.init(44100, -16, 2, 2048)
     archivo.read('Mapas/Level1.map')
 
+    Muros = pygame.sprite.Group()
+    Suelo = pygame.sprite.Group()
+    Plataformas = pygame.sprite.Group()
+
     """Creacion del mundo"""
     j=0
     for fila in Mapa1:
@@ -68,7 +84,15 @@ def Lvl1(ventana):
             py=int(archivo.get(c,'px'))
             col=int(archivo.get(c,'colision'))
             if col != 0:
-                ventana.blit(Mundo1[px][py],[64*i,64*j])
+                if (type == 'Muro'):
+                    Objeto = Muro([64*i,64*j],Mundo1[px][py])
+                    Muros.add(Objeto)
+                elif (type == 'Suelo'):
+                    Objeto = Suelo([64*i,64*j],Mundo1[px][py])
+                    Suelo.add(Objeto)
+                elif (type == 'Plataforma'):
+                    Objeto = Plataforma([64*i,64*j],Mundo1[px][py])
+                    Plataformas.add(Objeto)
             i+=1
         j+=1
 
@@ -105,6 +129,10 @@ def Lvl2(ventana):
     pygame.mixer.init(44100, -16, 2, 2048)
     archivo.read('Mapas/Level2.map')
 
+    Muros = pygame.sprite.Group()
+    Suelo = pygame.sprite.Group()
+    Plataformas = pygame.sprite.Group()
+
     """Creacion del mundo"""
     j=0
     for fila in Mapa1:
@@ -115,7 +143,15 @@ def Lvl2(ventana):
             py=int(archivo.get(c,'px'))
             col=int(archivo.get(c,'colision'))
             if col != 0:
-                ventana.blit(Mundo1[px][py],[64*i,64*j])
+                if (type == 'Muro'):
+                    Objeto = Muro([64*i,64*j],Mundo1[px][py])
+                    Muros.add(Objeto)
+                elif (type == 'Suelo'):
+                    Objeto = Suelo([64*i,64*j],Mundo1[px][py])
+                    Suelo.add(Objeto)
+                elif (type == 'Plataforma'):
+                    Objeto = Plataforma([64*i,64*j],Mundo1[px][py])
+                    Plataformas.add(Objeto)
             i+=1
         j+=1
 

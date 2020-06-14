@@ -42,7 +42,7 @@ py: 4
 colision: 1
 
 [#]
-tipo: plataforma
+tipo: Plataforma
 px: 4
 py: 7
 colision:1
