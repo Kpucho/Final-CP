@@ -12,11 +12,13 @@ class Jugador (pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x = pos[0]
         self.rect.y = pos[1]
+        self.radius = 10
         self.velx = 0
         self.vely = 0
         self.piso = False
         self.plataformas = None
         self.damage = 3
+        self.retroceso = False
 
     def lateral_der(self):
         return self.rect.right
@@ -93,12 +95,16 @@ class Jugador (pygame.sprite.Sprite):
         else:
             self.cont = 0
 
-        #Cambio de sprite
-        self.image = self.m[self.accion][self.cont]
-
+        if self.retroceso:
+            self.retroceso = False
+            self.velx = 0
 
         if not self.piso:
             self.gravedad()
+
+        #Cambio de sprite
+        self.image = self.m[self.accion][self.cont]
+
 
 class Plataforma(pygame.sprite.Sprite):
     def __init__(self, pos, dim):
@@ -108,6 +114,9 @@ class Plataforma(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x = pos[0]
         self.rect.y = pos[1]
+        self.velx = 0
+        self.vely = 0
+
 
 class Golpe(pygame.sprite.Sprite):
     def __init__(self, pos, me, damage = 1):
@@ -130,6 +139,260 @@ class Golpe(pygame.sprite.Sprite):
             self.fin =True
         self.image = self.me[self.accion][self.cont]
 
+class Enemigo1(pygame.sprite.Sprite):
+    def __init__(self, pos, dim, plataformas):
+        pygame.sprite.Sprite.__init__(self)
+        self.image = pygame.Surface(dim)
+        self.image.fill(BLANCO)
+        self.rect = self.image.get_rect()
+        self.rect.x = pos[0]
+        self.rect.y = pos[1]
+        self.accion = 1
+        self.velx = 0
+        self.vely = 0
+        self.piso = False
+        self.plataformas = plataformas
+        self.damage = 1
+        self.life = 10
+
+    def comportamiento(self):
+        #Pasivo
+        #Este enemigo solo se mueve en x
+        if self.accion == 1: #Izquierda
+            self.rect.x -= 65
+            if not self.detectarcamino():
+                self.accion = 0
+            self.rect.x += 65
+        else:
+            self.rect.x += 65
+            if not self.detectarcamino():
+                self.accion = 1
+            self.rect.x -= 65
+
+        #restaurar velocidad
+        if self.accion == 1:
+            self.velx = -3
+        else:
+            self.velx = 3
+
+
+    def detectarcamino(self):
+        self.rect.y += 1
+        lista = pygame.sprite.spritecollide(self, self.plataformas, False)
+        camino = False
+        #Si se coloca plataforma de tipo pinchos o
+        #dano verificar aqui para cambiar direccion
+        for p in lista:
+            camino = True
+        self.rect.y -=1
+        return camino
+
+    def gravedad(self, g = 0.5):
+        if self.vely == 0:
+            self.vely = g
+        else:
+            self.vely += g
+
+    def detectarPiso(self):
+        self.rect.y += 1
+        lista = pygame.sprite.spritecollide(self, self.plataformas, False)
+        suelo = False
+
+        for p in lista:
+            if self.vely >= 0:
+                if self.rect.bottom > p.rect.top:
+                    suelo = True
+        self.rect.y -=1
+        return suelo
+
+    def update(self):
+
+        self.rect.x += self.velx
+
+        ls_pla = pygame.sprite.spritecollide(self, self.plataformas, False)
+
+        #Modifica al enemigo para que choque entre "paredes"
+        for p in ls_pla:
+            if self.velx > 0:
+                if self.rect.right > p.rect.left:
+                    self.rect.right = p.rect.left
+                    self.accion = 1
+            else:
+                if self.rect.left < p.rect.right:
+                    self.rect.left = p.rect.right
+                    self.accion = 0
+
+
+        self.rect.y+=self.vely
+
+
+        if self.detectarPiso():
+            self.piso = True
+        else:
+            self.piso = False
+            # if self.accion == 0:
+            #     self.accion = 2
+            # elif self.accion == 1:
+            #     self.accion = 3
+
+
+        ls_pla = pygame.sprite.spritecollide(self, self.plataformas, False)
+
+        for p in ls_pla:
+            if self.vely > 0:
+                if self.rect.bottom > p.rect.top:
+                    self.rect.bottom = p.rect.top
+                    self.vely = 0
+                    # if self.accion == 2:
+                    #     self.accion = 0
+                    # elif self.accion == 3:
+                    #     self.accion = 1
+            else:
+                if self.rect.top < p.rect.bottom:
+                    self.rect.top = p.rect.bottom
+                    self.vely = 0
+
+        #Cambio de animacion
+        # if self.cont < 8:
+        #     self.cont += 1
+        # else:
+        #     self.cont = 0
+
+        #Cambio de sprite
+        # self.image = self.m[self.accion][self.cont]
+
+
+        if not self.piso:
+            self.gravedad()
+
+        self.comportamiento()
+
+class EnemigoEst1(pygame.sprite.Sprite):
+    def __init__(self, pos, dim, plataformas):
+        pygame.sprite.Sprite.__init__(self)
+        self.image = pygame.Surface(dim)
+        self.image.fill(LIGHT_PINK)
+        self.rect = self.image.get_rect()
+        self.rect.x = pos[0]
+        self.rect.y = pos[1]
+        self.accion = 1
+        self.velx = 0
+        self.vely = 0
+        self.piso = False
+        self.plataformas = plataformas
+        self.damage = 1
+        self.life = 13
+        self.radius = 100
+        self.ataque = False
+        self.ataquecont = 0
+
+    def get_poscentro(self):
+        return self.rect.center
+
+    def comportamiento(self):
+        #Comportamiento de ataque
+        #El enemigo es inmovil
+        if self.ataquecont < 2*FPS:
+            self.ataquecont += 1
+        else:
+            self.ataque = False
+            self.ataquecont = 0
+
+
+    def gravedad(self, g = 0.5):
+        if self.vely == 0:
+            self.vely = g
+        else:
+            self.vely += g
+
+    def detectarPiso(self):
+        self.rect.y += 1
+        lista = pygame.sprite.spritecollide(self, self.plataformas, False)
+        suelo = False
+
+        for p in lista:
+            if self.vely >= 0:
+                if self.rect.bottom > p.rect.top:
+                    suelo = True
+        self.rect.y -=1
+        return suelo
+
+    def update(self):
+
+        self.rect.x += self.velx
+
+        ls_pla = pygame.sprite.spritecollide(self, self.plataformas, False)
+
+
+        for p in ls_pla:
+            if self.velx > 0:
+                if self.rect.right > p.rect.left:
+                    self.rect.right = p.rect.left
+            else:
+                if self.rect.left < p.rect.right:
+                    self.rect.left = p.rect.right
+
+
+        self.rect.y+=self.vely
+
+
+        if self.detectarPiso():
+            self.piso = True
+        else:
+            self.piso = False
+            # if self.accion == 0:
+            #     self.accion = 2
+            # elif self.accion == 1:
+            #     self.accion = 3
+
+
+        ls_pla = pygame.sprite.spritecollide(self, self.plataformas, False)
+
+        for p in ls_pla:
+            if self.vely > 0:
+                if self.rect.bottom > p.rect.top:
+                    self.rect.bottom = p.rect.top
+                    self.vely = 0
+                    # if self.accion == 2:
+                    #     self.accion = 0
+                    # elif self.accion == 3:
+                    #     self.accion = 1
+            else:
+                if self.rect.top < p.rect.bottom:
+                    self.rect.top = p.rect.bottom
+                    self.vely = 0
+
+        #Cambio de animacion
+        # if self.cont < 8:
+        #     self.cont += 1
+        # else:
+        #     self.cont = 0
+
+        #Cambio de sprite
+        # self.image = self.m[self.accion][self.cont]
+
+
+        if not self.piso:
+            self.gravedad()
+
+        self.comportamiento()
+
+class Bala(pygame.sprite.Sprite):
+    #Constructor Clase
+    def __init__(self, pos, color = ROJO):
+        pygame.sprite.Sprite.__init__(self)
+        self.image = pygame.Surface([20,20])
+        self.image.fill(color)
+        #Permite cambiar la posicion perteminada que impone get_rect
+        self.rect = self.image.get_rect()
+        self.rect.x = pos[0]
+        self.rect.y= pos[1]
+        self.velx = 0
+        self.vely = 0
+
+    def update(self):
+        self.rect.y += self.vely
+        self.rect.x += self.velx
 
 
 def Juego(ventana):
@@ -163,8 +426,13 @@ def Juego(ventana):
     jugadores = pygame.sprite.Group()
     plataformas = pygame.sprite.Group()
     espadazos = pygame.sprite.Group()
+    enemigos1 = pygame.sprite.Group()
+    enemigosEst1 = pygame.sprite.Group()
 
-    j = Jugador([100, 100], m)
+    balas_ene = pygame.sprite.Group()
+
+
+    j = Jugador([50, 100], m)
     jugadores.add(j)
 
     p = Plataforma([200, 300],[100, 50])
@@ -173,10 +441,23 @@ def Juego(ventana):
     p = Plataforma([500, 300],[100, 50])
     plataformas.add(p)
 
-    p = Plataforma([0, 600],[1024, 40])
+    p = Plataforma([0, 576],[1024, 64])
     plataformas.add(p)
 
+    p = Plataforma([832, 512],[192, 64])
+    plataformas.add(p)
+
+    p = Plataforma([960, 448],[64, 64])
+    plataformas.add(p)
+
+    ene = Enemigo1([850, 448], [64,64], plataformas)
+    enemigos1.add(ene)
+
+    eneEst1 = EnemigoEst1([512, 512], [64, 64], plataformas)
+    enemigosEst1.add(eneEst1)
+
     j.plataformas = plataformas
+
 
     reloj = pygame.time.Clock()
     fin_juego = False
@@ -229,6 +510,64 @@ def Juego(ventana):
                 j.velx = 0
 
         #control
+        # Deteccion de cercania
+        # if pygame.sprite.collide_circle(r,j):
+        #     print 'cerca', r.id
+
+        #SECCION DE CREACCION
+        #crear balas enemigas de ciertos enemigos
+
+        for eneEst1 in enemigosEst1:
+            if not eneEst1.ataque:
+                eneEst1.ataque = True
+                #Bala izq
+                bala_e = Bala(eneEst1.get_poscentro())
+                bala_e.velx = -5
+                balas_ene.add(bala_e)
+                #Bala der
+                bala_e = Bala(eneEst1.get_poscentro())
+                bala_e.velx = 5
+                balas_ene.add(bala_e)
+                #Bala superior
+                bala_e = Bala(eneEst1.get_poscentro())
+                bala_e.vely = -5
+                balas_ene.add(bala_e)
+
+
+        #SECCION DE ELIMINACION
+        #Eliminacion de balas con las paredes y fuera de area:
+        for bala in balas_ene:
+            if pygame.sprite.spritecollide(bala, plataformas, False):
+                balas_ene.remove(bala)
+            elif pygame.sprite.spritecollide(bala, jugadores, False):
+                # Bajar vida al jugador
+
+                #Retroceso del golpe
+                j.retroceso = True
+                if bala.velx > 0:
+                    j.velx = 50
+                else:
+                    j.velx = -50
+                balas_ene.remove(bala)
+            elif pygame.sprite.spritecollide(bala, espadazos, False):
+                balas_ene.remove(bala)
+            elif bala.rect.y < -50 or bala.rect.y > (ALTO + 50):
+                balas_ene.remove(bala)
+            elif bala.rect.x < -50 or bala.rect.x > (ANCHO + 50):
+                balas_ene.remove(bala)
+
+
+        #Eliminacion del enemigo por el espadazo por 1
+        for espada in espadazos:
+            ls_ene = pygame.sprite.spritecollide(espada, enemigos1, False)
+            for enemigo in ls_ene:
+                enemigos1.remove(enemigo)
+
+        for espada in espadazos:
+            ls_ene = pygame.sprite.spritecollide(espada, enemigosEst1, False)
+            for enemigo in ls_ene:
+                enemigosEst1.remove(enemigo)
+
         #Eliminacion del golpe del jugador
         for espada in espadazos:
             if espada.fin:
@@ -242,11 +581,18 @@ def Juego(ventana):
         #Refresco
         jugadores.update()
         espadazos.update()
+        enemigos1.update()
+        enemigosEst1.update()
+        balas_ene.update()
 
         ventana.fill(NEGRO)
-        jugadores.draw(ventana)
-        espadazos.draw(ventana)
         plataformas.draw(ventana)
+        enemigos1.draw(ventana)
+        enemigosEst1.draw(ventana)
+        jugadores.draw(ventana)
+        balas_ene.draw(ventana)
+        espadazos.draw(ventana)
+
         pygame.display.flip()
         reloj.tick(FPS)
 
