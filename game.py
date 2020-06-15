@@ -523,6 +523,130 @@ class Enemigo2(pygame.sprite.Sprite):
         if not self.piso:
             self.gravedad()
 
+class EnemigoEst2(pygame.sprite.Sprite):
+    def __init__(self, pos, dim, plataformas):
+        pygame.sprite.Sprite.__init__(self)
+        self.image = pygame.Surface(dim)
+        self.image.fill(AZUL)
+        self.rect = self.image.get_rect()
+        self.rect.x = pos[0]
+        self.rect.y = pos[1]
+        self.accion = 1
+        self.velx = 0
+        self.vely = 0
+        self.piso = False
+        self.plataformas = plataformas
+        self.damage = 1
+        self.life = 13
+        self.radius = 150
+        self.alerta = False
+        self.ataque = True
+        self.ataquecont = 0
+
+    def get_poscentro(self):
+        return self.rect.center
+
+    def comportamiento(self):
+        #Comportamiento de ataque
+        #El enemigo es inmovil en x
+        if not self.alerta:
+            self.vely = 0
+        else:
+            if (not self.piso) and self.vely >= 0:
+                self.gravedad()
+            # elif self.piso and (not self.ataque):
+            #     self.vely = -5
+            elif self.piso:
+                self.ataque = False
+            elif self.detectarTecho():
+                self.alerta = False
+
+
+
+    def gravedad(self, g = 0.5):
+        if self.vely == 0:
+            self.vely = g
+        else:
+            self.vely += g
+
+    def detectarTecho(self):
+        self.rect.y += self.vely
+        lista = pygame.sprite.spritecollide(self, self.plataformas, False)
+        techo = False
+
+        for p in lista:
+            if self.vely <= 0:
+                if self.rect.top < p.rect.bottom:
+                    techo = True
+        self.rect.y -= self.vely
+        return techo
+
+    def detectarPiso(self):
+        self.rect.y += 1
+        lista = pygame.sprite.spritecollide(self, self.plataformas, False)
+        suelo = False
+
+        for p in lista:
+            if self.vely >= 0:
+                if self.rect.bottom > p.rect.top:
+                    suelo = True
+        self.rect.y -=1
+        return suelo
+
+    def update(self):
+
+        self.rect.x += self.velx
+
+        ls_pla = pygame.sprite.spritecollide(self, self.plataformas, False)
+
+
+        for p in ls_pla:
+            if self.velx > 0:
+                if self.rect.right > p.rect.left:
+                    self.rect.right = p.rect.left
+            else:
+                if self.rect.left < p.rect.right:
+                    self.rect.left = p.rect.right
+
+
+        self.rect.y+=self.vely
+
+
+        if self.detectarPiso():
+            self.piso = True
+        else:
+            self.piso = False
+            # if self.accion == 0:
+            #     self.accion = 2
+            # elif self.accion == 1:
+            #     self.accion = 3
+
+
+        ls_pla = pygame.sprite.spritecollide(self, self.plataformas, False)
+
+        for p in ls_pla:
+            if self.vely > 0:
+                if self.rect.bottom > p.rect.top:
+                    self.rect.bottom = p.rect.top
+                    self.vely = 0
+                    # if self.accion == 2:
+                    #     self.accion = 0
+                    # elif self.accion == 3:
+                    #     self.accion = 1
+            else:
+                if self.rect.top < p.rect.bottom:
+                    self.rect.top = p.rect.bottom
+                    self.vely = 0
+
+        #Cambio de animacion
+        # if self.cont < 8:
+        #     self.cont += 1
+        # else:
+        #     self.cont = 0
+
+        #Cambio de sprite
+        # self.image = self.m[self.accion][self.cont]
+        self.comportamiento()
 
 
 
@@ -578,6 +702,7 @@ def Juego(ventana):
     enemigos1 = pygame.sprite.Group()
     enemigos2 = pygame.sprite.Group()
     enemigosEst1 = pygame.sprite.Group()
+    enemigosEst2 = pygame.sprite.Group()
 
     balas_ene = pygame.sprite.Group()
 
@@ -606,10 +731,13 @@ def Juego(ventana):
     ene = Enemigo1([850, 448], [64,64], plataformas)
     enemigos1.add(ene)
 
-    ene2 = Enemigo2([512,512], [64,64], plataformas)
-    enemigos2.add(ene2)
+    # ene2 = Enemigo2([512,512], [64,64], plataformas)
+    # enemigos2.add(ene2)
     # eneEst1 = EnemigoEst1([512, 512], [64, 64], plataformas)
     # enemigosEst1.add(eneEst1)
+
+    eneEst2 = EnemigoEst2([535, 350], [64, 64], plataformas)
+    enemigosEst2.add(eneEst2)
 
     j.plataformas = plataformas
 
@@ -698,6 +826,23 @@ def Juego(ventana):
                 bala_e.vely = -5
                 balas_ene.add(bala_e)
 
+        for eneEst2 in enemigosEst2:
+
+            if pygame.sprite.collide_circle(eneEst2,j):
+                eneEst2.alerta = True
+            if not eneEst2.ataque:
+                eneEst2.ataque = True
+                #rebona al disparar
+                eneEst2.vely = -5
+
+                #Bala izq
+                bala_e = Bala(eneEst2.get_poscentro())
+                bala_e.velx = -5
+                balas_ene.add(bala_e)
+                #Bala der
+                bala_e = Bala(eneEst2.get_poscentro())
+                bala_e.velx = 5
+                balas_ene.add(bala_e)
 
         #SECCION DE ELIMINACION
         #Eliminacion de balas con las paredes y fuera de area:
@@ -748,6 +893,7 @@ def Juego(ventana):
         espadazos.update()
         enemigos1.update()
         enemigosEst1.update()
+        enemigosEst2.update()
         enemigos2.update()
         balas_ene.update()
 
@@ -755,6 +901,7 @@ def Juego(ventana):
         plataformas.draw(ventana)
         enemigos1.draw(ventana)
         enemigosEst1.draw(ventana)
+        enemigosEst2.draw(ventana)
         enemigos2.draw(ventana)
         jugadores.draw(ventana)
         balas_ene.draw(ventana)
