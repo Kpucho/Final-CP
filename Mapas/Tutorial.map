@@ -1,6 +1,7 @@
 [info]
 fondo: image_lvl1.png
-mapa: mmmmmmmmmmmmmmmmmmmmmmmmm
+mapa: m.......................m
+      m..........#............m
       m.......................m
       m.......#..#..#.........m
       m.......................m
@@ -8,7 +9,6 @@ mapa: mmmmmmmmmmmmmmmmmmmmmmmmm
       m.t..#...#...#...#....t.m
       m.p...................p.m
       sssssssssssssssssssssssss
-      mmmmmmmmmmmmmmmmmmmmmmmmm
       mmmmmmmmmmmmmmmmmmmmmmmmm
 
 [m]
@@ -19,8 +19,8 @@ colision: 1
 
 [.]
 tipo: Mundo
-px:
-py:
+px: 0
+py: 0
 colision: 0
 
 [s]

@@ -2,46 +2,60 @@ import pygame
 import random
 import ConfigParser
 from lib import *
-from Objetos import *
+from Objetos.Muro import *
+from Objetos.Suelo import *
+from Objetos.Plataforma import *
 
 archivo = ConfigParser.ConfigParser()
 
-def Tutorial(ventana):
-    ventana.fill(NEGRO)
-    pygame.mixer.init(44100, -16, 2, 2048)
-    archivo.read('Mapas/Tutorial.map')
-
-    Muros = pygame.sprite.Group()
-    Suelo = pygame.sprite.Group()
-    Plataformas = pygame.sprite.Group()
-
-    """Creacion del mundo"""
+def Draw_World(archivo, Objects):
+    Mapa1 = archivo.get('info','mapa').split('\n')
     j=0
     for fila in Mapa1:
         i=0
         for c in fila:
-            type = string(archivo.get(c,'tipo'))
+            type = archivo.get(c,'tipo')
             px=int(archivo.get(c,'px'))
             py=int(archivo.get(c,'px'))
             col=int(archivo.get(c,'colision'))
             if col != 0:
                 if (type == 'Muro'):
-                    Objeto = Muro([64*i,64*j],Mundo1[px][py])
-                    Muros.add(Objeto)
+                    #Objeto = Muro([64*i,64*j],Mundo1[px][py])
+                    Objeto = Muro([64*i,64*j])
+                    Objects[0].add(Objeto)
                 elif (type == 'Suelo'):
-                    Objeto = Suelo([64*i,64*j],Mundo1[px][py])
-                    Suelo.add(Objeto)
+                    #Objeto = Suelo([64*i,64*j],Mundo1[px][py])
+                    Objeto = Suelo([64*i,64*j])
+                    Objects[1].add(Objeto)
                 elif (type == 'Plataforma'):
-                    Objeto = Plataforma([64*i,64*j],Mundo1[px][py])
-                    Plataformas.add(Objeto)
+                    #Objeto = Plataforma([64*i,64*j],Mundo1[px][py])
+                    Objeto = Plataforma([64*i,64*j])
+                    Objects[2].add(Objeto)
             i+=1
         j+=1
+
+def Tutorial(ventana):
+    ventana.fill(NEGRO)
+    pygame.mixer.init(44100, -16, 2, 2048)
+    archivo.read('Mapas/Tutorial.map')
+    Objects = []
+
+    Muros = pygame.sprite.Group()
+    Suelos = pygame.sprite.Group()
+    Plataformas = pygame.sprite.Group()
+
+    Objects.append(Muros)
+    Objects.append(Suelos)
+    Objects.append(Plataformas)
+
+    """Creacion del mundo"""
+    Draw_World(archivo, Objects)
 
     #fondojuego = pygame.image.load('carmap.png')
     #musica = pygame.mixer.Sound('sonidos/juego.wav')
 
     reloj = pygame.time.Clock()
-    fin_juego = False
+    NextLvl= False
     fin = False
     #musica.play(-1)
     """Eventos"""
@@ -62,6 +76,11 @@ def Tutorial(ventana):
 
         #Dibujado
         ventana.fill(NEGRO)
+        for o in Objects:
+            o.draw(ventana)
+        #Muros.draw(ventana)
+        #Plataformas.draw(ventana)
+        #Suelos.draw(ventana)
         pygame.display.flip()
         reloj.tick(FPS)
 
@@ -69,38 +88,24 @@ def Lvl1(ventana):
     ventana.fill(NEGRO)
     pygame.mixer.init(44100, -16, 2, 2048)
     archivo.read('Mapas/Level1.map')
+    Objects = []
 
     Muros = pygame.sprite.Group()
-    Suelo = pygame.sprite.Group()
+    Suelos = pygame.sprite.Group()
     Plataformas = pygame.sprite.Group()
 
+    Objects.append(Muros)
+    Objects.append(Suelos)
+    Objects.append(Plataformas)
+
     """Creacion del mundo"""
-    j=0
-    for fila in Mapa1:
-        i=0
-        for c in fila:
-            type = string(archivo.get(c,'tipo'))
-            px=int(archivo.get(c,'px'))
-            py=int(archivo.get(c,'px'))
-            col=int(archivo.get(c,'colision'))
-            if col != 0:
-                if (type == 'Muro'):
-                    Objeto = Muro([64*i,64*j],Mundo1[px][py])
-                    Muros.add(Objeto)
-                elif (type == 'Suelo'):
-                    Objeto = Suelo([64*i,64*j],Mundo1[px][py])
-                    Suelo.add(Objeto)
-                elif (type == 'Plataforma'):
-                    Objeto = Plataforma([64*i,64*j],Mundo1[px][py])
-                    Plataformas.add(Objeto)
-            i+=1
-        j+=1
+    Draw_World(archivo, Objects)
 
     #fondojuego = pygame.image.load('carmap.png')
     #musica = pygame.mixer.Sound('sonidos/juego.wav')
 
     reloj = pygame.time.Clock()
-    fin_juego = False
+    NextLvl = False
     fin = False
     #musica.play(-1)
     """Eventos"""
@@ -128,38 +133,24 @@ def Lvl2(ventana):
     ventana.fill(NEGRO)
     pygame.mixer.init(44100, -16, 2, 2048)
     archivo.read('Mapas/Level2.map')
+    Objects = []
 
     Muros = pygame.sprite.Group()
-    Suelo = pygame.sprite.Group()
+    Suelos = pygame.sprite.Group()
     Plataformas = pygame.sprite.Group()
 
+    Objects.append(Muros)
+    Objects.append(Suelos)
+    Objects.append(Plataformas)
+
     """Creacion del mundo"""
-    j=0
-    for fila in Mapa1:
-        i=0
-        for c in fila:
-            type = string(archivo.get(c,'tipo'))
-            px=int(archivo.get(c,'px'))
-            py=int(archivo.get(c,'px'))
-            col=int(archivo.get(c,'colision'))
-            if col != 0:
-                if (type == 'Muro'):
-                    Objeto = Muro([64*i,64*j],Mundo1[px][py])
-                    Muros.add(Objeto)
-                elif (type == 'Suelo'):
-                    Objeto = Suelo([64*i,64*j],Mundo1[px][py])
-                    Suelo.add(Objeto)
-                elif (type == 'Plataforma'):
-                    Objeto = Plataforma([64*i,64*j],Mundo1[px][py])
-                    Plataformas.add(Objeto)
-            i+=1
-        j+=1
+    Draw_World(archivo, Objects)
 
     #fondojuego = pygame.image.load('carmap.png')
     #musica = pygame.mixer.Sound('sonidos/juego.wav')
 
     reloj = pygame.time.Clock()
-    fin_juego = False
+    NextLvl = False
     fin = False
     #musica.play(-1)
     """Eventos"""
@@ -182,7 +173,6 @@ def Lvl2(ventana):
         ventana.fill(NEGRO)
         pygame.display.flip()
         reloj.tick(FPS)
-
 
 def FinJuego(ventana):
     ventana.fill(NEGRO)

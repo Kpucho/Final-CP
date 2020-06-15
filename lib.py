@@ -16,9 +16,11 @@ AZUL=[0,0,255]
 LIGHT_ROJO = [255,55,55]
 LIGHT_PINK = [212, 159, 183]
 
-"""             Carga de mundos                 """
+"""             Carga de mundos        """
+
 Mundo1 = []
 #carga de imagen
+"""
 img_textura = pygame.image.load('Sprites/lvl.png')
 for j in range(12):
     fila = []
@@ -28,7 +30,7 @@ for j in range(12):
     Mundo1.append(fila)
 
 archivo.read('Level1.map')
-Mapa1 = archivo.get('info','mapa').split('\n')
+"""
 
 """             Funciones cracks                """
 def draw_text(msj, font, color, surface, cord):
