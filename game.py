@@ -51,7 +51,80 @@ def Tutorial(ventana):
     fin = False
     #musica.play(-1)
     """Eventos"""
-    while not fin and (not fin_juego):
+    while not fin and (not NextLvl):
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                fin = True
+            if event.type ==pygame.KEYDOWN:
+                if event.key == pygame.K_RIGHT or event.key == pygame.K_d:
+                    j.velx = 10
+                    if not j.piso:
+                        j.accion = 2
+                    else:
+                        j.vely = 0
+                        j.accion = 0
+                    j.cont = 0
+                if event.key == pygame.K_LEFT or event.key == pygame.K_a:
+                    j.velx = -10
+                    if not j.piso:
+                        j.accion = 3
+                    else:
+                        j.vely = 0
+                        j.accion = 1
+                    j.cont = 0
+                if event.key == pygame.K_SPACE:
+                    j.vely = -10
+                    j.piso = False
+                    if j.accion == 0:
+                        j.accion = 2
+                    elif j.accion == 1:
+                        j.accion = 3
+                    j.cont = 0
+                if event.key == pygame.K_f:
+                    if j.accion == 0:
+                        j.accion = 4
+                        j.cont = 0
+                        espada = Golpe([j.lateral_der(), j.rect.y], me)
+                        espada.accion = 0
+                        espadazos.add(espada)
+                    elif j.accion == 1:
+                        j.accion = 5
+                        j.cont = 0
+                        espada = Golpe([j.lateral_izq() - 64, j.rect.y], me)
+                        espada.accion = 1
+                        espadazos.add(espada)
+            if event.type == pygame.KEYUP:
+                j.velx = 0
+
+
+        #Dibujado
+        #Jugadores.update()
+        #Plataformas.update(Vel_fondo)
+        ventana.fill(NEGRO)
+        #Jugadores.draw(ventana)
+        Plataformas.draw(ventana)
+        pygame.display.flip()
+        reloj.tick(FPS)
+
+def Lvl1(ventana):
+    ventana.fill(NEGRO)
+    pygame.mixer.init(44100, -16, 2, 2048)
+    archivo.read('Mapas/Level1.map')
+
+    Plataformas = pygame.sprite.Group()
+
+    """Creacion del mundo"""
+    Draw_World(archivo, Plataformas)
+
+    #fondojuego = pygame.image.load('carmap.png')
+    #musica = pygame.mixer.Sound('sonidos/juego.wav')
+
+    reloj = pygame.time.Clock()
+    NextLvl = False
+    fin = False
+    #musica.play(-1)
+    """Eventos"""
+    while not fin and (not NextLvl):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 fin = True
@@ -106,75 +179,6 @@ def Tutorial(ventana):
         pygame.display.flip()
         reloj.tick(FPS)
 
-def Lvl1(ventana):
-    ventana.fill(NEGRO)
-    pygame.mixer.init(44100, -16, 2, 2048)
-    archivo.read('Mapas/Level1.map')
-
-    Plataformas = pygame.sprite.Group()
-
-    """Creacion del mundo"""
-    Draw_World(archivo, Plataformas)
-
-    #fondojuego = pygame.image.load('carmap.png')
-    #musica = pygame.mixer.Sound('sonidos/juego.wav')
-
-    reloj = pygame.time.Clock()
-    NextLvl = False
-    fin = False
-    #musica.play(-1)
-    """Eventos"""
-    while not fin and (not fin_juego):
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                fin = True
-            if event.type ==pygame.KEYDOWN:
-                if event.key == pygame.K_RIGHT or event.key == pygame.K_d:
-                    j.velx = 10
-                    if not j.piso:
-                        j.accion = 2
-                    else:
-                        j.vely = 0
-                        j.accion = 0
-                    j.cont = 0
-                if event.key == pygame.K_LEFT or event.key == pygame.K_a:
-                    j.velx = -10
-                    if not j.piso:
-                        j.accion = 3
-                    else:
-                        j.vely = 0
-                        j.accion = 1
-                    j.cont = 0
-                if event.key == pygame.K_SPACE:
-                    j.vely = -10
-                    j.piso = False
-                    if j.accion == 0:
-                        j.accion = 2
-                    elif j.accion == 1:
-                        j.accion = 3
-                    j.cont = 0
-                if event.key == pygame.K_f:
-                    if j.accion == 0:
-                        j.accion = 4
-                        j.cont = 0
-                        espada = Golpe([j.lateral_der(), j.rect.y], me)
-                        espada.accion = 0
-                        espadazos.add(espada)
-                    elif j.accion == 1:
-                        j.accion = 5
-                        j.cont = 0
-                        espada = Golpe([j.lateral_izq() - 64, j.rect.y], me)
-                        espada.accion = 1
-                        espadazos.add(espada)
-            if event.type == pygame.KEYUP:
-                j.velx = 0
-
-
-        #Dibujado
-        ventana.fill(NEGRO)
-        pygame.display.flip()
-        reloj.tick(FPS)
-
 def Lvl2(ventana):
     ventana.fill(NEGRO)
     pygame.mixer.init(44100, -16, 2, 2048)
@@ -193,7 +197,7 @@ def Lvl2(ventana):
     fin = False
     #musica.play(-1)
     """Eventos"""
-    while not fin and (not fin_juego):
+    while not fin and (not NextLvl):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 fin = True
@@ -239,7 +243,11 @@ def Lvl2(ventana):
                 j.velx = 0
 
         #Dibujado
+        Jugadores.update()
+        Plataformas.update(Vel_fondo)
         ventana.fill(NEGRO)
+        Jugadores.draw(ventana)
+        Plataformas.draw(ventana)
         pygame.display.flip()
         reloj.tick(FPS)
 

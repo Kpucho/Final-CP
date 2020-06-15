@@ -7,9 +7,9 @@ class Plataforma(pygame.sprite.Sprite):
     def __init__(self, pos, type):
         pygame.sprite.Sprite.__init__(self)
         self.image = pygame.Surface([64,64])
-        if type == s:
+        if type == 's':
             self.image.fill(VERDE)
-        elif type == m:
+        elif type == 'm':
             self.image.fill(BLANCO)
         else:
             self.image.fill(ROJO)
