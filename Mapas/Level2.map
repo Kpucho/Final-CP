@@ -23,7 +23,6 @@ px:
 py:
 colision: 0
 
-
 [s]
 tipo: Suelo
 px: 7
