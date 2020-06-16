@@ -961,15 +961,14 @@ def Menu(ventana):
     pygame.font.init()
     pygame.mixer.init(44100, -16, 2, 2048)
     fuente = pygame.font.Font(None, 40)
-    #fondo  = pygame.image.load('images/fondo.png')
-    #musica = pygame.mixer.Sound('sonidos/menu.wav')
+    fondo  = pygame.image.load('images/menu.jpg')
+    musica = pygame.mixer.Sound('sonidos/menu.wav')
     fin = False
     previo = False
     info_juego = False
     click = False
-    #musica.play(-1)
+    musica.play(-1)
     while (not fin) and (not previo) and (not info_juego):
-
         pygame.display.flip()
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -978,12 +977,12 @@ def Menu(ventana):
                 if event.button == 1:
                     click = True
 
-        #ventana.blit(fondo, [0,0])
+        ventana.blit(fondo, [0,0])
         mx, my = pygame.mouse.get_pos()
-        draw_text('Un titulo mamon', fuente, BLANCO, ventana, [300, 50])
-        boton1 = pygame.Rect(300, 150, 220, 50)
-        boton2 = pygame.Rect(300, 250, 220, 50)
-        boton3 = pygame.Rect(300, 350, 220, 50)
+        draw_text("Slappy's adventures", fuente, BLANCO, ventana, [380, 50])
+        boton1 = pygame.Rect(400, 150, 220, 50)
+        boton2 = pygame.Rect(400, 250, 220, 50)
+        boton3 = pygame.Rect(400, 350, 220, 50)
 
         if boton1.collidepoint((mx, my)):
             if click:
@@ -994,20 +993,77 @@ def Menu(ventana):
         if boton3.collidepoint((mx, my)):
             if click:
                 fin = True
-        pygame.draw.rect(ventana, LIGHT_PINK, boton1)
-        draw_text('Iniciar', fuente, BLANCO, ventana, [370, 160])
-        pygame.draw.rect(ventana, LIGHT_PINK, boton2)
-        draw_text('Como jugar', fuente, BLANCO, ventana, [350, 260])
-        pygame.draw.rect(ventana, LIGHT_PINK, boton3)
-        draw_text('Salir', fuente, BLANCO, ventana, [370, 360])
+
+        pygame.draw.rect(ventana, FUCSIA, boton1)
+        draw_text('Iniciar', fuente, BLANCO, ventana, [470, 160])
+        pygame.draw.rect(ventana, FUCSIA, boton2)
+        draw_text('Como jugar', fuente, BLANCO, ventana, [440, 260])
+        pygame.draw.rect(ventana, FUCSIA, boton3)
+        draw_text('Salir', fuente, BLANCO, ventana, [470, 360])
 
         click = False
 
-    #musica.stop()
+    musica.stop()
     if (previo):
         Juego(ventana)
     if (info_juego):
         InfoJuego(ventana)
+
+def Intro(ventana):
+    ventana.fill(NEGRO)
+    pygame.font.init()
+    pygame.mixer.init(44100, -16, 2, 2048)
+    fuente = pygame.font.Font(None, 40)
+    #fondo  = pygame.image.load('images/fondo.png')
+    musica = pygame.mixer.Sound('sonidos/menu.wav')
+    fin = False
+    previo = False
+    click = False
+    reloj = pygame.time.Clock()
+    #musica.play(-1)
+    i = 0
+    texto_pos = 450
+    while (not fin) and (not previo):
+        i += 10
+        pygame.display.flip()
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                fin = True
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if event.button == 1:
+                    click = True
+
+        #ventana.blit(fondo, [0,0])
+        mx, my = pygame.mouse.get_pos()
+        ventana.fill(NEGRO)
+        draw_text("Slappy's adventures", fuente, AMARILLO, ventana, [330, texto_pos - i])
+        draw_text("Erase una vez, en un universo donde la imaginacion se hace realidad,", fuente, BLANCO, ventana, [50, (texto_pos + 40) - i])
+        draw_text("un joven caballero de la raza de los Slimes, decidio abandonar su", fuente, BLANCO, ventana, [50, (texto_pos + 80) - i])
+        draw_text("mundo para combatir el mal que se estaba apoderando de otras", fuente, BLANCO, ventana, [50, (texto_pos + 120) - i])
+        draw_text("tierras vecinas. Durante su viaje se encontro enemigos inimaginables", fuente, BLANCO, ventana, [50, (texto_pos + 160) - i])
+        draw_text("cuyos unicos objetivos eran hacer del viaje de Slappy una pesadilla", fuente, BLANCO, ventana, [50, (texto_pos + 200) - i])
+        draw_text("Sigue a este valiente heroe en esta aventura...", fuente, BLANCO, ventana, [50, (texto_pos + 240) - i])
+
+
+
+
+        if ((texto_pos + 250) - i) <= 0:
+            previo = True
+
+        boton1 = pygame.Rect(800, 590, 220, 50)
+        if boton1.collidepoint((mx, my)):
+            if click:
+                previo = True
+        pygame.draw.rect(ventana, ROJO, boton1)
+        draw_text('Saltar', fuente, BLANCO, ventana, [870, 600])
+
+
+        click = False
+        reloj.tick(3)
+
+    musica.stop()
+    if (previo):
+        Menu(ventana)
 
 def InfoJuego(ventana):
     ventana.fill(NEGRO)
@@ -1067,4 +1123,4 @@ if __name__ == '__main__':
     #pygame.display.set_icon(pygame.image.load(''))
     """                       MENU                                        """
 
-    Menu(ventana)
+    Intro(ventana)

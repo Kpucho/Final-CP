@@ -12,10 +12,11 @@ BLANCO=[255,255,255]
 AZUL=[0,0,255]
 LIGHT_ROJO = [255,55,55]
 LIGHT_PINK = [212, 159, 183]
+FUCSIA = [158, 80, 96]
 
 FPS = 40
 
-Titulo = 'Un nombre mamado'
+Titulo = "Slappy's adventures"
 
 """             Funciones cracks                """
 def draw_text(msj, font, color, surface, cord):
