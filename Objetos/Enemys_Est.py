@@ -64,7 +64,7 @@ class Enemy_Est1(pygame.sprite.Sprite):
                 if self.rect.right > p.rect.left:
                     self.rect.right = p.rect.left
             else:
-                if self.rect.left < p.rect.right:
+                if self.rect.left < p.rect.right and self.velx != 0:
                     self.rect.left = p.rect.right
 
 
@@ -93,7 +93,7 @@ class Enemy_Est1(pygame.sprite.Sprite):
                     # elif self.accion == 3:
                     #     self.accion = 1
             else:
-                if self.rect.top < p.rect.bottom:
+                if self.rect.top < p.rect.bottom and self.vely != 0:
                     self.rect.top = p.rect.bottom
                     self.vely = 0
 
@@ -195,7 +195,7 @@ class Enemy_Est2(pygame.sprite.Sprite):
                 if self.rect.right > p.rect.left:
                     self.rect.right = p.rect.left
             else:
-                if self.rect.left < p.rect.right:
+                if self.rect.left < p.rect.right and self.velx != 0:
                     self.rect.left = p.rect.right
 
 
@@ -224,7 +224,7 @@ class Enemy_Est2(pygame.sprite.Sprite):
                     # elif self.accion == 3:
                     #     self.accion = 1
             else:
-                if self.rect.top < p.rect.bottom:
+                if self.rect.top < p.rect.bottom and self.vely != 0:
                     self.rect.top = p.rect.bottom
                     self.vely = 0
 
