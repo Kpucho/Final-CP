@@ -7,7 +7,7 @@ from Objetos.Plataforma import *
 
 archivo = ConfigParser.ConfigParser()
 
-def Draw_World(archivo, Plataformas):
+def Draw_World(archivo, Plataformas, Jugadores):
     Mapa1 = archivo.get('info','mapa').split('\n')
     j=0
     for fila in Mapa1:
@@ -30,6 +30,9 @@ def Draw_World(archivo, Plataformas):
                     #Objeto = Plataforma([64*i,64*j],Mundo1[px][py])
                     Objeto = Plataforma([64*i,64*j],'p')
                     Plataformas.add(Objeto)
+                elif (type == 'Jugador'):
+                    J = Player([64*i,64*j], im_j)
+                    Jugadores.add(J)
             i+=1
         j+=1
 
@@ -39,9 +42,13 @@ def Tutorial(ventana):
     archivo.read('Mapas/Tutorial.map')
 
     Plataformas = pygame.sprite.Group()
-
+    Jugadores = pygame.sprite.Group()
     """Creacion del mundo"""
-    Draw_World(archivo, Plataformas)
+    Draw_World(archivo, Plataformas, Jugadores)
+
+    for jugador in Jugadores:
+        J = jugador
+        J.plataformas = Plataformas
 
     #fondojuego = pygame.image.load('carmap.png')
     #musica = pygame.mixer.Sound('sonidos/juego.wav')
@@ -57,52 +64,52 @@ def Tutorial(ventana):
                 fin = True
             if event.type ==pygame.KEYDOWN:
                 if event.key == pygame.K_RIGHT or event.key == pygame.K_d:
-                    j.velx = 10
-                    if not j.piso:
-                        j.accion = 2
+                    J.velx = 10
+                    if not J.piso:
+                        J.accion = 2
                     else:
-                        j.vely = 0
-                        j.accion = 0
-                    j.cont = 0
+                        J.vely = 0
+                        J.accion = 0
+                    J.cont = 0
                 if event.key == pygame.K_LEFT or event.key == pygame.K_a:
-                    j.velx = -10
-                    if not j.piso:
-                        j.accion = 3
+                    J.velx = -10
+                    if not J.piso:
+                        J.accion = 3
                     else:
-                        j.vely = 0
-                        j.accion = 1
-                    j.cont = 0
+                        J.vely = 0
+                        J.accion = 1
+                    J.cont = 0
                 if event.key == pygame.K_SPACE:
-                    j.vely = -10
-                    j.piso = False
-                    if j.accion == 0:
-                        j.accion = 2
-                    elif j.accion == 1:
-                        j.accion = 3
-                    j.cont = 0
+                    J.vely = -10
+                    J.piso = False
+                    if J.accion == 0:
+                        J.accion = 2
+                    elif J.accion == 1:
+                        J.accion = 3
+                    J.cont = 0
                 if event.key == pygame.K_f:
-                    if j.accion == 0:
-                        j.accion = 4
-                        j.cont = 0
-                        espada = Golpe([j.lateral_der(), j.rect.y], me)
+                    if J.accion == 0:
+                        J.accion = 4
+                        J.cont = 0
+                        espada = Golpe([J.lateral_der(), J.rect.y], me)
                         espada.accion = 0
                         espadazos.add(espada)
-                    elif j.accion == 1:
-                        j.accion = 5
-                        j.cont = 0
-                        espada = Golpe([j.lateral_izq() - 64, j.rect.y], me)
+                    elif J.accion == 1:
+                        J.accion = 5
+                        J.cont = 0
+                        espada = Golpe([J.lateral_izq() - 64, J.rect.y], me)
                         espada.accion = 1
                         espadazos.add(espada)
             if event.type == pygame.KEYUP:
-                j.velx = 0
+                J.velx = 0
 
 
         #Dibujado
         #Jugadores.update()
         #Plataformas.update(Vel_fondo)
         ventana.fill(NEGRO)
-        #Jugadores.draw(ventana)
         Plataformas.draw(ventana)
+        Jugadores.draw(ventana)
         pygame.display.flip()
         reloj.tick(FPS)
 
@@ -112,9 +119,14 @@ def Lvl1(ventana):
     archivo.read('Mapas/Level1.map')
 
     Plataformas = pygame.sprite.Group()
-
+    Jugadores = pygame.sprite.Group()
+    J = None
     """Creacion del mundo"""
-    Draw_World(archivo, Plataformas)
+    Draw_World(archivo, Plataformas, Jugadores)
+
+    for jugador in Jugadores:
+        J = jugador
+        J.plataformas = Plataformas
 
     #fondojuego = pygame.image.load('carmap.png')
     #musica = pygame.mixer.Sound('sonidos/juego.wav')
@@ -130,44 +142,44 @@ def Lvl1(ventana):
                 fin = True
             if event.type ==pygame.KEYDOWN:
                 if event.key == pygame.K_RIGHT or event.key == pygame.K_d:
-                    j.velx = 10
-                    if not j.piso:
-                        j.accion = 2
+                    J.velx = 10
+                    if not J.piso:
+                        J.accion = 2
                     else:
-                        j.vely = 0
-                        j.accion = 0
-                    j.cont = 0
+                        J.vely = 0
+                        J.accion = 0
+                    J.cont = 0
                 if event.key == pygame.K_LEFT or event.key == pygame.K_a:
-                    j.velx = -10
-                    if not j.piso:
-                        j.accion = 3
+                    J.velx = -10
+                    if not J.piso:
+                        J.accion = 3
                     else:
-                        j.vely = 0
-                        j.accion = 1
-                    j.cont = 0
+                        J.vely = 0
+                        J.accion = 1
+                    J.cont = 0
                 if event.key == pygame.K_SPACE:
-                    j.vely = -10
-                    j.piso = False
-                    if j.accion == 0:
-                        j.accion = 2
-                    elif j.accion == 1:
-                        j.accion = 3
-                    j.cont = 0
+                    J.vely = -10
+                    J.piso = False
+                    if J.accion == 0:
+                        J.accion = 2
+                    elif J.accion == 1:
+                        J.accion = 3
+                    J.cont = 0
                 if event.key == pygame.K_f:
-                    if j.accion == 0:
-                        j.accion = 4
-                        j.cont = 0
-                        espada = Golpe([j.lateral_der(), j.rect.y], me)
+                    if J.accion == 0:
+                        J.accion = 4
+                        J.cont = 0
+                        espada = Golpe([J.lateral_der(), J.rect.y], me)
                         espada.accion = 0
                         espadazos.add(espada)
-                    elif j.accion == 1:
-                        j.accion = 5
-                        j.cont = 0
-                        espada = Golpe([j.lateral_izq() - 64, j.rect.y], me)
+                    elif J.accion == 1:
+                        J.accion = 5
+                        J.cont = 0
+                        espada = Golpe([J.lateral_izq() - 64, J.rect.y], me)
                         espada.accion = 1
                         espadazos.add(espada)
             if event.type == pygame.KEYUP:
-                j.velx = 0
+                J.velx = 0
 
 
         #Dibujado
@@ -185,9 +197,14 @@ def Lvl2(ventana):
     archivo.read('Mapas/Level2.map')
 
     Plataformas = pygame.sprite.Group()
-
+    Jugadores = pygame.sprite.Group()
+    J = None
     """Creacion del mundo"""
-    Draw_World(archivo, Plataformas)
+    Draw_World(archivo, Plataformas, Jugadores)
+
+    for jugador in Jugadores:
+        J = jugador
+        J.plataformas = Plataformas
 
     #fondojuego = pygame.image.load('carmap.png')
     #musica = pygame.mixer.Sound('sonidos/juego.wav')
@@ -203,44 +220,44 @@ def Lvl2(ventana):
                 fin = True
             if event.type ==pygame.KEYDOWN:
                 if event.key == pygame.K_RIGHT or event.key == pygame.K_d:
-                    j.velx = 10
-                    if not j.piso:
-                        j.accion = 2
+                    J.velx = 10
+                    if not J.piso:
+                        J.accion = 2
                     else:
-                        j.vely = 0
-                        j.accion = 0
-                    j.cont = 0
+                        J.vely = 0
+                        J.accion = 0
+                    J.cont = 0
                 if event.key == pygame.K_LEFT or event.key == pygame.K_a:
-                    j.velx = -10
-                    if not j.piso:
-                        j.accion = 3
+                    J.velx = -10
+                    if not J.piso:
+                        J.accion = 3
                     else:
-                        j.vely = 0
-                        j.accion = 1
-                    j.cont = 0
+                        J.vely = 0
+                        J.accion = 1
+                    J.cont = 0
                 if event.key == pygame.K_SPACE:
-                    j.vely = -10
-                    j.piso = False
-                    if j.accion == 0:
-                        j.accion = 2
-                    elif j.accion == 1:
-                        j.accion = 3
-                    j.cont = 0
+                    J.vely = -10
+                    J.piso = False
+                    if J.accion == 0:
+                        J.accion = 2
+                    elif J.accion == 1:
+                        J.accion = 3
+                    J.cont = 0
                 if event.key == pygame.K_f:
-                    if j.accion == 0:
-                        j.accion = 4
-                        j.cont = 0
-                        espada = Golpe([j.lateral_der(), j.rect.y], me)
+                    if J.accion == 0:
+                        J.accion = 4
+                        J.cont = 0
+                        espada = Golpe([J.lateral_der(), J.rect.y], me)
                         espada.accion = 0
                         espadazos.add(espada)
-                    elif j.accion == 1:
-                        j.accion = 5
-                        j.cont = 0
-                        espada = Golpe([j.lateral_izq() - 64, j.rect.y], me)
+                    elif J.accion == 1:
+                        J.accion = 5
+                        J.cont = 0
+                        espada = Golpe([J.lateral_izq() - 64, J.rect.y], me)
                         espada.accion = 1
                         espadazos.add(espada)
             if event.type == pygame.KEYUP:
-                j.velx = 0
+                J.velx = 0
 
         #Dibujado
         Jugadores.update()
@@ -318,7 +335,7 @@ def Menu(ventana):
 
         #ventana.blit(fondo, [0,0])
         mx, my = pygame.mouse.get_pos()
-        draw_text('Un titulo mamon', fuente, BLANCO, ventana, [300, 50])
+        draw_text(Titulo, fuente, BLANCO, ventana, [300, 50])
         boton1 = pygame.Rect(300, 150, 220, 50)
         boton2 = pygame.Rect(300, 250, 220, 50)
         boton3 = pygame.Rect(300, 350, 220, 50)
