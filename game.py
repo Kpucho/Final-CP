@@ -4,10 +4,13 @@ import ConfigParser
 from lib import *
 from Objetos.Player import *
 from Objetos.Plataforma import *
+from Objetos.Enemys_moviles import *
+from Objetos.Enemys_Est import *
+from Objetos.Etc import *
 
 archivo = ConfigParser.ConfigParser()
 
-def Draw_World(archivo, Plataformas, Jugadores):
+def Draw_World(archivo, Plataformas, Jugadores, Enemys_Est1, Enemys_Est2, Enemys_Movil1, Enemys_Movil2):
     Mapa1 = archivo.get('info','mapa').split('\n')
     j=0
     for fila in Mapa1:
@@ -33,6 +36,18 @@ def Draw_World(archivo, Plataformas, Jugadores):
                 elif (type == 'Jugador'):
                     J = Player([64*i,64*j], im_j)
                     Jugadores.add(J)
+                elif (type == 'Es1'):
+                    E = Enemy_Est1([64*i,64*j],[64,64])
+                    Enemys_Est1.add(E)
+                elif (type == 'Es2'):
+                    E = Enemy_Est2([64*i,64*j],[64,64])
+                    Enemys_Est2.add(E)
+                elif (type == 'Em1'):
+                    E = Enemy_Movil1([64*i,64*j],[64,64])
+                    Enemys_Movi1.add(E)
+                elif (type == 'Em2'):
+                    E = Enemy_Movil2([64*i,64*j],[64,64])
+                    Enemys_Movi2.add(E)
             i+=1
         j+=1
 
@@ -40,15 +55,35 @@ def Tutorial(ventana):
     ventana.fill(NEGRO)
     pygame.mixer.init(44100, -16, 2, 2048)
     archivo.read('Mapas/Tutorial.map')
-
+    J = None
     Plataformas = pygame.sprite.Group()
     Jugadores = pygame.sprite.Group()
+    espadazos = pygame.sprite.Group()
+    Enemys_Movil1 = pygame.sprite.Group()
+    Enemys_Movil2 = pygame.sprite.Group()
+    Enemys_Est1 = pygame.sprite.Group()
+    Enemys_Est2 = pygame.sprite.Group()
+
+    Balas_ene = pygame.sprite.Group()
+
     """Creacion del mundo"""
-    Draw_World(archivo, Plataformas, Jugadores)
+    Draw_World(archivo, Plataformas, Jugadores, Enemys_Est1, Enemys_Est2, Enemys_Movil1, Enemys_Movil2)
 
     for jugador in Jugadores:
         J = jugador
         J.plataformas = Plataformas
+
+    for E in Enemys_Movil1:
+        E.plataformas = Plataformas
+
+    for E in Enemys_Movil2:
+        E.plataformas = Plataformas
+
+    for E in Enemys_Est1:
+        E.plataformas = Plataformas
+
+    for E in Enemys_Est2:
+        E.plataformas = Plataformas
 
     #fondojuego = pygame.image.load('carmap.png')
     #musica = pygame.mixer.Sound('sonidos/juego.wav')
@@ -103,13 +138,122 @@ def Tutorial(ventana):
             if event.type == pygame.KEYUP:
                 J.velx = 0
 
+#control
+        # Deteccion de cercania
+        # if pygame.sprite.collide_circle(r,j):
+        #     print 'cerca', r.id
+
+        #Actualizacion de pos del jugador para los enemigos
+        #Colisiones radiales
+        for ene2 in Enemys_Movil2:
+            if ene2.alerta:
+                ene2.posxjugador = J.rect.centerx
+            elif pygame.sprite.collide_circle(ene2,J):
+                print 'Alerta'
+                ene2.alerta = True
+
+        #SECCION DE CREACCION
+
+        #crear balas enemigas de ciertos enemigos
+        #Crea las balas del enemigo estacionario de nivel 1
+        for eneEst1 in Enemys_Est1:
+            if not eneEst1.ataque:
+                eneEst1.ataque = True
+                #Bala izq
+                bala_e = Bala(eneEst1.get_poscentro())
+                bala_e.velx = -5
+                Balas_ene.add(bala_e)
+                #Bala der
+                bala_e = Bala(eneEst1.get_poscentro())
+                bala_e.velx = 5
+                Balas_ene.add(bala_e)
+                #Bala superior
+                bala_e = Bala(eneEst1.get_poscentro())
+                bala_e.vely = -5
+                Balas_ene.add(bala_e)
+
+        for eneEst2 in Enemys_Est2:
+
+            if pygame.sprite.collide_circle(eneEst2,j):
+                eneEst2.alerta = True
+            if not eneEst2.ataque:
+                eneEst2.ataque = True
+                #rebona al disparar
+                eneEst2.vely = -5
+
+                #Bala izq
+                bala_e = Bala(eneEst2.get_poscentro())
+                bala_e.velx = -5
+                Balas_ene.add(bala_e)
+                #Bala der
+                bala_e = Bala(eneEst2.get_poscentro())
+                bala_e.velx = 5
+                Balas_ene.add(bala_e)
+
+        #SECCION DE ELIMINACION
+        #Eliminacion de balas con las paredes y fuera de area:
+        for bala in Balas_ene:
+            if pygame.sprite.spritecollide(bala, Plataformas, False):
+                Balas_ene.remove(bala)
+            elif pygame.sprite.spritecollide(bala, Jugadores, False):
+                # Bajar vida al jugador
+
+                #Retroceso del golpe
+                J.retroceso = True
+                if bala.velx > 0:
+                    J.velx = 50
+                else:
+                    J.velx = -50
+                Balas_ene.remove(bala)
+            elif pygame.sprite.spritecollide(bala, espadazos, False):
+                Balas_ene.remove(bala)
+            elif bala.rect.y < -50 or bala.rect.y > (ALTO + 50):
+                Balas_ene.remove(bala)
+            elif bala.rect.x < -50 or bala.rect.x > (ANCHO + 50):
+                Balas_ene.remove(bala)
+
+
+        #Eliminacion del enemigo por el espadazo por 1
+        for espada in espadazos:
+            ls_ene = pygame.sprite.spritecollide(espada, Enemys_Movil1, False)
+            for enemigo in ls_ene:
+                Enemys_Movil1.remove(enemigo)
+
+        for espada in espadazos:
+            ls_ene = pygame.sprite.spritecollide(espada, Enemys_Est1, False)
+            for enemigo in ls_ene:
+                Enemys_Est1.remove(enemigo)
+
+        #Eliminacion del golpe del jugador
+        for espada in espadazos:
+            if espada.fin:
+                if J.accion == 4:
+                    J.accion = 0
+                elif J.accion == 5:
+                    J.accion = 1
+                espadazos.remove(espada)
+
+        #Refresco
+        Jugadores.update()
+        #Plataformas.update(Vel_fondo)
+        espadazos.update()
+        Enemys_Movil1.update()
+        Enemys_Est1.update()
+        Enemys_Est2.update()
+        Enemys_Movil2.update()
+        Balas_ene.update()
 
         #Dibujado
-        #Jugadores.update()
-        #Plataformas.update(Vel_fondo)
         ventana.fill(NEGRO)
         Plataformas.draw(ventana)
+        Enemys_Movil1.draw(ventana)
+        Enemys_Est1.draw(ventana)
+        Enemys_Est2.draw(ventana)
+        Enemys_Movil2.draw(ventana)
         Jugadores.draw(ventana)
+        Balas_ene.draw(ventana)
+        espadazos.draw(ventana)
+
         pygame.display.flip()
         reloj.tick(FPS)
 

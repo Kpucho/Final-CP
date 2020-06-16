@@ -3,7 +3,7 @@ DORADO = [212, 175, 55]
 BLANCO=[255,255,255]
 
 class Enemy_Movil1(pygame.sprite.Sprite):
-    def __init__(self, pos, dim, plataformas):
+    def __init__(self, pos, dim):
         pygame.sprite.Sprite.__init__(self)
         self.image = pygame.Surface(dim)
         self.image.fill(BLANCO)
@@ -131,7 +131,7 @@ class Enemy_Movil1(pygame.sprite.Sprite):
         self.comportamiento()
 
 class Enemy_Movil2(pygame.sprite.Sprite):
-    def __init__(self, pos, dim, plataformas):
+    def __init__(self, pos, dim):
         pygame.sprite.Sprite.__init__(self)
         self.image = pygame.Surface(dim)
         self.image.fill(DORADO)

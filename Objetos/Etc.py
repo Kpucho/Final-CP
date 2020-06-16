@@ -1,4 +1,5 @@
 import pygame
+ROJO=[255,0,0]
 
 class Golpe(pygame.sprite.Sprite):
     def __init__(self, pos, me, damage = 1):
