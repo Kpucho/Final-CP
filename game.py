@@ -292,10 +292,10 @@ def PLAY(ventana):
         Plataformas.update(Mundo_velx)
         Jugadores.update()
         espadazos.update()
-        Enemys_Movil1.update(Mundo_velx)
-        Enemys_Est1.update(Mundo_velx)
-        Enemys_Est2.update(Mundo_velx)
-        Enemys_Movil2.update(Mundo_velx)
+        Enemys_Movil1.update()
+        Enemys_Est1.update()
+        Enemys_Est2.update()
+        Enemys_Movil2.update()
         Balas_ene.update()
         Mundo_posx+=Mundo_velx
 
