@@ -1,15 +1,17 @@
 [info]
 fondo: image_lvl1.png
-mapa: ...................................................................m
-      .............................q.............e.......................m
-      .....................e..m....m............###......q.................m
-      ....................mmmmmmmmmm...................####....................m
-      ..................qm...............................................m
-      ........e.........m......q...............#.##...e..................m
-      ........mmmmmmmmmm......msm....................##.............................m
-      ....j..................msmms..........###........................t..m
-      ...p..................smsmsmm.....................e.............p..m
-      ssssssssssssssssssssssmmsmmsmssss..ss....ssssssssssssssssssssss.sss.sssss
+mapa: ......................................................mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm......................................................................m
+      .......................................................mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm..........mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm.................................................q....................m
+      .....................................q..................mmmmmmmmmmmmmmmmmmmmmmmmmmmm........mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm...........mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm.........................................mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm........mmmmmmmmmmmmmmm..............q.............................e....#####......q...........m
+      .................................##..##.....e............mmmmmmmmm...........mmmmmm.........mmmmmmmmmmmmmmmmmmmmmmm......mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm..............................................................mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm............######.........................#####............###..........m
+      ......................e.......m...........###......q......mmmmmmmm.........mmmmmmm..........mmmmmmmmmmmmmmmmmmmmmm........mmmmmmmmmmmmmmmmmmmmmmmmmmmm...................................................................................................mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm........................e.............q...................................m
+      .....................mmmmmmmmmm...................####......mmmmmm.......mmmmmmmmmmmmmmm.mmmmmm.............mmmmm..........mmmmmmmmmm.........................................................q......................e.....................................................mmmmmmmmmmmmmmmmmmmmmmmmmm.......................#####.........#####.................................m
+      ..................qmm........................................mmmmmmmmmmmmmmmm...................................................................................................e....mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm.........................................................................................................................................p...........m
+      ........e........mm......q..........................................................................................m..m...........................................q.......mmmmmmmmmmmmm........mmmmmmmmmmmmmmmm........mmmmmmmm.mmmm.............e................................................................................#####..................#...sssssssssss.......m
+      ........mmmmmmmmmm......msm.....##.....e...........................................................m....m..........mm..mm.......................q........mmmmmmmmmmmmmmm.mmmmmmmmmmmmmmmmmmmmm.mmmmmmmmmmmmmmmmmm.mmmmmmmmmmmmmm.mmmmmmmmmmmmmmmmmmmmmm.............q..........................................................q...................e....#...mmmmmmmmmmmmmm......m
+      ....j..................msmms..........###........................................e...............m.mmm.m.....e....mmm..mmm........e.....mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm.mmmmmmmmmmmmmmmmmmmmmmm..mmmmmmmmmmmmm..mmmmmmmmmmmmmmm.mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm..............e.............q..............######....#####....q.........######..........................m
+      ...p..................smsmsmm.....................e...............q...........mmmmmmmm.mmmm.mmmmmmmmmm.mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm.mmmmmmmmmmmmmmmmmmmmmmmmm.............mmmmmmmmmmmmmmmmm.mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmssssss.ssssssssss.......................########.......................................m
+      ssssssssssssssssssssssmmsmmsmssss..ss....ssssssssssssssssssssss..sss...mmmmmmmmmmmmmmm.mmmm.mmmmmmmmmm.mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm.mmmmmmmm.mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm.mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmsssssssss.sssssssssssssssssss.............................................................m
 
 [j]
 tipo: Jugador

@@ -4,7 +4,7 @@ Titulo = 'Un nombre mamado'
 ANCHO = 960
 ALTO = 768
 FPS = 40
-Limite_der = 640
+Limite_der = 576
 Limite_iz = 256
 
 #Colores

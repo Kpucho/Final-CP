@@ -70,7 +70,6 @@ def PLAY(ventana):
     else:
         """GANA"""
 
-    J = None
     Plataformas = pygame.sprite.Group()
     Jugadores = pygame.sprite.Group()
     espadazos = pygame.sprite.Group()
@@ -116,7 +115,9 @@ def PLAY(ventana):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 fin = True
-            if event.type ==pygame.KEYDOWN:
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_DOWN or event.key == pygame.K_s:
+                    J.velx = 0
                 if event.key == pygame.K_RIGHT or event.key == pygame.K_d:
                     J.velx = 10
                     if not J.piso:
@@ -160,24 +161,21 @@ def PLAY(ventana):
 #control
         #Mov Mundo
         if J.velx > 0:
-            if J.rect.x > Limite_der:
-                J.rect.x = Limite_der
-                if Mundo_posx > (Mundo_Limite_der):
-                    Mundo_velx = -4
-                else:
-                    Mundo_velx = 0
+            if (J.rect.x + 128) >= Limite_der:
+                J.rect.x = (Limite_der - 128)
+            if Mundo_posx >= (Mundo_Limite_der):
+                Mundo_velx = -J.velx
             else:
                 Mundo_velx = 0
 
         if J.velx < 0:
-            if J.rect.x < Limite_iz:
-                J.rect.x = Limite_iz
-                if Mundo_posx > 0:
-                    Mundo_velx = 4
-                else:
-                    Mundo_velx = 0
+            if J.rect.x <= 0:
+                J.rect.x = 0
+            if Mundo_posx < 0:
+                Mundo_velx = -J.velx
             else:
                 Mundo_velx = 0
+
 
         # Deteccion de cercania
         # if pygame.sprite.collide_circle(r,j):
