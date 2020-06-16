@@ -47,10 +47,10 @@ def Draw_World(archivo, Plataformas, Jugadores, Enemys_Est1, Enemys_Est2, Enemys
                     Enemys_Est2.add(E)
                 elif (type == 'Em1'):
                     E = Enemy_Movil1([64*i,64*j],[64,64])
-                    Enemys_Movi1.add(E)
+                    Enemys_Movil1.add(E)
                 elif (type == 'Em2'):
                     E = Enemy_Movil2([64*i,64*j],[64,64])
-                    Enemys_Movi2.add(E)
+                    Enemys_Movil2.add(E)
             i+=1
         M_Limite = i
         j+=1
@@ -145,13 +145,13 @@ def PLAY(ventana):
                     if J.accion == 0:
                         J.accion = 4
                         J.cont = 0
-                        espada = Golpe([J.lateral_der(), J.rect.y], me)
+                        espada = Golpe([J.lateral_der(), J.rect.y], im_es)
                         espada.accion = 0
                         espadazos.add(espada)
                     elif J.accion == 1:
                         J.accion = 5
                         J.cont = 0
-                        espada = Golpe([J.lateral_izq() - 64, J.rect.y], me)
+                        espada = Golpe([J.lateral_izq() - 64, J.rect.y], im_es)
                         espada.accion = 1
                         espadazos.add(espada)
             if event.type == pygame.KEYUP:
@@ -163,7 +163,7 @@ def PLAY(ventana):
             if J.rect.x > Limite_der:
                 J.rect.x = Limite_der
                 if Mundo_posx > (Mundo_Limite_der):
-                    Mundo_velx = -5
+                    Mundo_velx = -4
                 else:
                     Mundo_velx = 0
             else:
@@ -173,7 +173,7 @@ def PLAY(ventana):
             if J.rect.x < Limite_iz:
                 J.rect.x = Limite_iz
                 if Mundo_posx > 0:
-                    Mundo_velx = 5
+                    Mundo_velx = 4
                 else:
                     Mundo_velx = 0
             else:
@@ -273,14 +273,29 @@ def PLAY(ventana):
                     J.accion = 1
                 espadazos.remove(espada)
 
+        #Refresco de las plataformas para movs
+        J.plataformas = Plataformas
+
+        for E in Enemys_Movil1:
+            E.plataformas = Plataformas
+
+        for E in Enemys_Movil2:
+            E.plataformas = Plataformas
+
+        for E in Enemys_Est1:
+            E.plataformas = Plataformas
+
+        for E in Enemys_Est2:
+            E.plataformas = Plataformas
+
         #Refresco
-        Jugadores.update()
         Plataformas.update(Mundo_velx)
+        Jugadores.update()
         espadazos.update()
-        Enemys_Movil1.update()
-        Enemys_Est1.update()
-        Enemys_Est2.update()
-        Enemys_Movil2.update()
+        Enemys_Movil1.update(Mundo_velx)
+        Enemys_Est1.update(Mundo_velx)
+        Enemys_Est2.update(Mundo_velx)
+        Enemys_Movil2.update(Mundo_velx)
         Balas_ene.update()
         Mundo_posx+=Mundo_velx
 
