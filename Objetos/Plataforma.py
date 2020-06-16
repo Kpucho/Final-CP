@@ -17,8 +17,6 @@ class Plataforma(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x = pos[0]
         self.rect.y = pos[1]
-        self.velx = 0
-        self.vely = 0
 
-    def update(Vel_fondo):
-        pass
+    def update(self,Mundo_velx):
+        self.rect.x += Mundo_velx

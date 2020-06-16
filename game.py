@@ -12,6 +12,7 @@ archivo = ConfigParser.ConfigParser()
 
 def Draw_World(archivo, Plataformas, Jugadores, Enemys_Est1, Enemys_Est2, Enemys_Movil1, Enemys_Movil2):
     Mapa1 = archivo.get('info','mapa').split('\n')
+    M_limite = 0
     j=0
     for fila in Mapa1:
         i=0
@@ -49,7 +50,9 @@ def Draw_World(archivo, Plataformas, Jugadores, Enemys_Est1, Enemys_Est2, Enemys
                     E = Enemy_Movil2([64*i,64*j],[64,64])
                     Enemys_Movi2.add(E)
             i+=1
+        M_Limite = i
         j+=1
+    return (M_Limite*64)
 
 def Tutorial(ventana):
     ventana.fill(NEGRO)
@@ -65,9 +68,13 @@ def Tutorial(ventana):
     Enemys_Est2 = pygame.sprite.Group()
 
     Balas_ene = pygame.sprite.Group()
+    Mundo_posx = 0
+    Mundo_velx = 0
 
     """Creacion del mundo"""
-    Draw_World(archivo, Plataformas, Jugadores, Enemys_Est1, Enemys_Est2, Enemys_Movil1, Enemys_Movil2)
+    Mundo_Limite_der = Draw_World(archivo, Plataformas, Jugadores, Enemys_Est1, Enemys_Est2, Enemys_Movil1, Enemys_Movil2)
+
+    Mundo_Limite_der = ANCHO - Mundo_Limite_der
 
     for jugador in Jugadores:
         J = jugador
@@ -139,6 +146,27 @@ def Tutorial(ventana):
                 J.velx = 0
 
 #control
+        #Mov Mundo
+        if J.velx > 0:
+            if J.rect.x > Limite_der:
+                J.rect.x = Limite_der
+                if Mundo_posx > (Mundo_Limite_der):
+                    Mundo_velx = -5
+                else:
+                    Mundo_velx = 0
+            else:
+                Mundo_velx = 0
+
+        if J.velx < 0:
+            if J.rect.x < Limite_iz:
+                J.rect.x = Limite_iz
+                if Mundo_posx > 0:
+                    Mundo_velx = 5
+                else:
+                    Mundo_velx = 0
+            else:
+                Mundo_velx = 0
+
         # Deteccion de cercania
         # if pygame.sprite.collide_circle(r,j):
         #     print 'cerca', r.id
@@ -235,13 +263,14 @@ def Tutorial(ventana):
 
         #Refresco
         Jugadores.update()
-        #Plataformas.update(Vel_fondo)
+        Plataformas.update(Mundo_velx)
         espadazos.update()
         Enemys_Movil1.update()
         Enemys_Est1.update()
         Enemys_Est2.update()
         Enemys_Movil2.update()
         Balas_ene.update()
+        Mundo_posx+=Mundo_velx
 
         #Dibujado
         ventana.fill(NEGRO)

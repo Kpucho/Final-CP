@@ -4,8 +4,8 @@ Titulo = 'Un nombre mamado'
 ANCHO = 960
 ALTO = 640
 FPS = 40
-Limite_supe = 544
-Limite_infe = 416
+Limite_der = 544
+Limite_iz = 416
 
 """             Validadores de nivel            """
 Tutorial = False
