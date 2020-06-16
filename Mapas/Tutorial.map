@@ -4,7 +4,7 @@ mapa: ........................m
       ...........#............m
       ........................m
       ........#..#..#.........m
-      ........................m
+      .......q................m
       .......#.......#........m
       .....#...#...#...#....t.m
       .tj.....................m
@@ -13,42 +13,44 @@ mapa: ........................m
 
 [j]
 tipo: Jugador
-px: 0
-py: 0
+colision: 1
+
+[q]
+tipo: Es1
+colision: 1
+
+[w]
+tipo: Es2
+colision: 1
+
+[e]
+tipo: Em1
+colision: 1
+
+[r]
+tipo: Em2
 colision: 1
 
 [m]
 tipo: Muro
-px: 8
-py: 12
 colision: 1
 
 [.]
 tipo: Mundo
-px: 0
-py: 0
 colision: 0
 
 [s]
 tipo: Suelo
-px: 7
-py: 8
 colision: 1
 
 [t]
 tipo: supuerta
-px: 9
-py: 3
 colision: 1
 
 [p]
 tipo: Puerta
-px: 9
-py: 4
 colision: 1
 
 [#]
 tipo: Plataforma
-px: 4
-py: 7
 colision:1

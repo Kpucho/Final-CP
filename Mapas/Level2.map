@@ -8,46 +8,49 @@ mapa: ...................................................................m
       .......................................mm..........................m
       ....................................mm.............................m
       .tj............................mm...............................t..m
-      ..p..............................mm.............................p..m
+      .p...............................mm.............................p..m
       sssssssssssssssssssssssssssssss..sssssssssssssssssssssssss.sss.sssss
+
 [j]
 tipo: Jugador
-px: 0
-py: 0
+colision: 1
+
+[q]
+tipo: Es1
+colision: 1
+
+[w]
+tipo: Es2
+colision: 1
+
+[e]
+tipo: Em1
+colision: 1
+
+[r]
+tipo: Em2
 colision: 1
 
 [m]
 tipo: Muro
-px: 8
-py: 12
 colision: 1
 
 [.]
 tipo: Mundo
-px:
-py:
 colision: 0
 
 [s]
 tipo: Suelo
-px: 7
-py: 8
 colision: 1
 
 [t]
 tipo: supuerta
-px: 9
-py: 3
 colision: 1
 
 [p]
 tipo: Puerta
-px: 9
-py: 4
 colision: 1
 
 [#]
-tipo: plataforma
-px: 4
-py: 7
+tipo: Plataforma
 colision:1

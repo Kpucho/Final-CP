@@ -14,7 +14,7 @@ class Enemy_Movil1(pygame.sprite.Sprite):
         self.velx = 0
         self.vely = 0
         self.piso = False
-        self.plataformas = plataformas
+        self.plataformas = None
         self.damage = 1
         self.life = 7
 
@@ -142,7 +142,7 @@ class Enemy_Movil2(pygame.sprite.Sprite):
         self.velx = 0
         self.vely = 0
         self.piso = False
-        self.plataformas = plataformas
+        self.plataformas = None
         self.damage = 1
         self.life = 10
         self.radius = 160

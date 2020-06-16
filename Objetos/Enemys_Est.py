@@ -1,9 +1,9 @@
 import pygame
 AZUL=[0,0,255]
 LIGHT_PINK = [212, 159, 183]
-
+FPS = 40
 class Enemy_Est1(pygame.sprite.Sprite):
-    def __init__(self, pos, dim, plataformas):
+    def __init__(self, pos, dim):
         pygame.sprite.Sprite.__init__(self)
         self.image = pygame.Surface(dim)
         self.image.fill(LIGHT_PINK)
@@ -14,7 +14,7 @@ class Enemy_Est1(pygame.sprite.Sprite):
         self.velx = 0
         self.vely = 0
         self.piso = False
-        self.plataformas = plataformas
+        self.plataformas = None
         self.damage = 1
         self.life = 13
         self.radius = 100
@@ -114,7 +114,7 @@ class Enemy_Est1(pygame.sprite.Sprite):
 
 
 class Enemy_Est2(pygame.sprite.Sprite):
-    def __init__(self, pos, dim, plataformas):
+    def __init__(self, pos, dim):
         pygame.sprite.Sprite.__init__(self)
         self.image = pygame.Surface(dim)
         self.image.fill(AZUL)
@@ -125,7 +125,7 @@ class Enemy_Est2(pygame.sprite.Sprite):
         self.velx = 0
         self.vely = 0
         self.piso = False
-        self.plataformas = plataformas
+        self.plataformas = None
         self.damage = 1
         self.life = 13
         self.radius = 150
