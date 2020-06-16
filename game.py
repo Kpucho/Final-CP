@@ -60,7 +60,7 @@ def PLAY(ventana):
     ventana.fill(NEGRO)
     pygame.mixer.init(44100, -16, 2, 2048)
     archivo = ConfigParser.ConfigParser()
-
+    print Free_Tutorial, Free_Nivel1, Free_Nivel2
     if Free_Tutorial == False:
         archivo.read('Mapas/Tutorial.map')
     elif Free_Nivel1 == False:
@@ -212,7 +212,7 @@ def PLAY(ventana):
 
         for eneEst2 in Enemys_Est2:
 
-            if pygame.sprite.collide_circle(eneEst2,j):
+            if pygame.sprite.collide_circle(eneEst2,J):
                 eneEst2.alerta = True
             if not eneEst2.ataque:
                 eneEst2.ataque = True
@@ -287,14 +287,14 @@ def PLAY(ventana):
             E.plataformas = Plataformas
 
         #Refresco
-        Plataformas.update(Mundo_velx)
         Jugadores.update()
+        Plataformas.update(Mundo_velx)
         espadazos.update()
-        Enemys_Movil1.update()
-        Enemys_Est1.update()
-        Enemys_Est2.update()
-        Enemys_Movil2.update()
-        Balas_ene.update()
+        Enemys_Movil1.update(Mundo_velx)
+        Enemys_Est1.update(Mundo_velx)
+        Enemys_Est2.update(Mundo_velx)
+        Enemys_Movil2.update(Mundo_velx)
+        Balas_ene.update(Mundo_velx)
         Mundo_posx+=Mundo_velx
 
         #Dibujado
@@ -380,22 +380,16 @@ def Menu(ventana):
         mx, my = pygame.mouse.get_pos()
         draw_text(Titulo, fuente, BLANCO, ventana, [300, 50])
         boton1 = pygame.Rect(300, 150, 220, 50)
-        boton2 = pygame.Rect(300, 250, 220, 50)
         boton3 = pygame.Rect(300, 350, 220, 50)
 
         if boton1.collidepoint((mx, my)):
             if click:
                 previo = True
-        if boton2.collidepoint((mx, my)):
-            if click:
-                info_juego = True
         if boton3.collidepoint((mx, my)):
             if click:
                 fin = True
         pygame.draw.rect(ventana, LIGHT_PINK, boton1)
         draw_text('Iniciar', fuente, BLANCO, ventana, [370, 160])
-        pygame.draw.rect(ventana, LIGHT_PINK, boton2)
-        draw_text('Como jugar', fuente, BLANCO, ventana, [350, 260])
         pygame.draw.rect(ventana, LIGHT_PINK, boton3)
         draw_text('Salir', fuente, BLANCO, ventana, [370, 360])
 
@@ -414,6 +408,9 @@ def SelectWorld(ventana):
     fuente = pygame.font.Font(None, 40)
     #fondo  = pygame.image.load('images/fondo.png')
     #musica = pygame.mixer.Sound('sonidos/menu.wav')
+    global Free_Tutorial
+    global Free_Nivel1
+    global Free_Nivel2
     fin = False
     Tuto = False
     Lvl1 = False

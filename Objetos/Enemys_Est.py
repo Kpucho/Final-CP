@@ -52,9 +52,9 @@ class Enemy_Est1(pygame.sprite.Sprite):
         self.rect.y -=1
         return suelo
 
-    def update(self):
+    def update(self, Mundo_velx):
 
-        self.rect.x += self.velx
+        self.rect.x += self.velx + Mundo_velx
 
         ls_pla = pygame.sprite.spritecollide(self, self.plataformas, False)
 
@@ -183,9 +183,9 @@ class Enemy_Est2(pygame.sprite.Sprite):
         self.rect.y -=1
         return suelo
 
-    def update(self):
+    def update(self, Mundo_velx):
 
-        self.rect.x += self.velx
+        self.rect.x += self.velx + Mundo_velx
 
         ls_pla = pygame.sprite.spritecollide(self, self.plataformas, False)
 

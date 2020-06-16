@@ -2,7 +2,7 @@ import pygame
 """             Constantes                      """
 Titulo = 'Un nombre mamado'
 ANCHO = 960
-ALTO = 768
+ALTO = 640
 FPS = 40
 Limite_der = 576
 Limite_iz = 256
