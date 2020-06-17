@@ -232,7 +232,7 @@ class EnemigoEst1(pygame.sprite.Sprite):
                     self.rect.top = p.rect.bottom
                     self.vely = 0
 
-        Cambio de animacion
+        #Cambio de animacion
         if self.cont < 8:
             self.cont += 1
         else:
@@ -240,7 +240,6 @@ class EnemigoEst1(pygame.sprite.Sprite):
 
         #Cambio de sprite
         # self.image = self.m[self.accion][self.cont]
-
 
         if not self.piso:
             self.gravedad()

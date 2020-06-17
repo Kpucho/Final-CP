@@ -405,9 +405,6 @@ def Juego(ventana):
     # boss = Jefe1([512, 200], [128, 128], plataformas)
     # jefes1.add(boss)
 
-
-
-
     reloj = pygame.time.Clock()
     fin_juego = False
     fin = False
@@ -786,12 +783,6 @@ def InfoJuego(ventana):
     #musica.stop()
     if (iniciar):
         Juego(ventana)
-
-
-
-
-
-
 
 if __name__ == '__main__':
     ventana = pygame.display.set_mode([ANCHO,ALTO])
