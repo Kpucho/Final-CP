@@ -269,6 +269,10 @@ class Bola(pygame.sprite.Sprite):
 
 
 def Juego(ventana):
+    # Musica
+    pygame.mixer.init(44100, -16, 2, 2048)
+    musica = pygame.mixer.Sound('sonidos/nivel_1.wav')
+    musica.play(-1)
     #Borra lo anterior
     ventana.fill(NEGRO)
     #Creacion de grupos
@@ -358,9 +362,6 @@ def Juego(ventana):
 
 
 
-    # Musica
-    # pygame.mixer.init(44100, -16, 2, 2048)
-    #musica = pygame.mixer.Sound('sonidos/juego.wav')
 
 
 
@@ -639,18 +640,19 @@ def Juego(ventana):
         pygame.display.flip()
         reloj.tick(FPS)
 
-    #musica.stop()
+    musica.stop()
     FinJuego(ventana)
 
 def FinJuego(ventana):
     ventana.fill(NEGRO)
     pygame.font.init()
     pygame.mixer.init(44100, -16, 2, 2048)
-    #musica = pygame.mixer.Sound('sonidos/final.wav')
+    fondo  = pygame.image.load('images/menu.jpg')
+    musica = pygame.mixer.Sound('sonidos/menu.wav')
     fuente = pygame.font.Font(None, 40)
     #fondo  = pygame.image.load('images/fin_juego.jpg')
     click = False
-    #musica.play(-1)
+    musica.play(-1)
     fin = False
     volver = False
     while (not fin) and (not volver):
@@ -662,9 +664,9 @@ def FinJuego(ventana):
                 if event.button == 1:
                     click = True
 
-        #ventana.blit(fondo, [0,0])
+        ventana.blit(fondo, [0,0])
         mx, my = pygame.mouse.get_pos()
-        draw_text(Titulo, fuente, ROJO, ventana, [300, 650])
+        draw_text("Slappy's adventures", fuente, BLANCO, ventana, [380, 50])
         boton1 = pygame.Rect(100, 400, 250, 50)
 
         boton2 = pygame.Rect(450, 400, 250, 50)
@@ -674,15 +676,15 @@ def FinJuego(ventana):
         if boton2.collidepoint((mx, my)):
             if click:
                 fin = True
-        pygame.draw.rect(ventana, LIGHT_ROJO, boton1)
+        pygame.draw.rect(ventana,  FUCSIA, boton1)
         draw_text('Volver a jugar', fuente, BLANCO, ventana, [120, 410])
-        pygame.draw.rect(ventana, LIGHT_ROJO, boton2)
+        pygame.draw.rect(ventana,  FUCSIA, boton2)
         draw_text('Salir', fuente, BLANCO, ventana, [540, 410])
 
         click = False
 
     if not fin:
-        #musica.stop()
+        musica.stop()
         Juego(ventana)
 
 def Menu(ventana):
