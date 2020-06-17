@@ -17,6 +17,14 @@ mapa: ..........................................................................
 tipo: Jugador
 colision: 1
 
+[v]
+tipo: Vida
+colision: 1
+
+[i]
+tipo: Invul
+colision: 1
+
 [q]
 tipo: Es1
 colision: 1
@@ -47,10 +55,6 @@ colision: 0
 
 [s]
 tipo: Suelo
-colision: 1
-
-[t]
-tipo: supuerta
 colision: 1
 
 [p]

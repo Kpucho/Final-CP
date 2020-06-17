@@ -26,30 +26,30 @@ def Draw_World(archivo, Plataformas, Jugadores, Enemys_Est1, Enemys_Est2, Enemys
             if col != 0:
                 if (type == 'Muro'):
                     #Objeto = Plataforma([64*i,64*j],Mundo1[px][py])
-                    Objeto = Plataforma([64*i,64*j],'m')
+                    Objeto = Plataforma([70*i,70*j],'m')
                     Plataformas.add(Objeto)
                 elif (type == 'Suelo'):
                     #Objeto = Suelo([64*i,64*j],Mundo1[px][py])
-                    Objeto = Plataforma([64*i,64*j],'s')
+                    Objeto = Plataforma([70*i,70*j],'s')
                     Plataformas.add(Objeto)
                 elif (type == 'Plataforma'):
                     #Objeto = Plataforma([64*i,64*j],Mundo1[px][py])
-                    Objeto = Plataforma([64*i,64*j],'p')
+                    Objeto = Plataforma([70*i,70*j],'p')
                     Plataformas.add(Objeto)
                 elif (type == 'Jugador'):
-                    J = Player([64*i,64*j], im_j)
+                    J = Player([70*i,70*j], im_j)
                     Jugadores.add(J)
                 elif (type == 'Es1'):
-                    E = Enemy_Est1([64*i,64*j],[64,64])
+                    E = Enemy_Est1([70*i,70*j],[64,64])
                     Enemys_Est1.add(E)
                 elif (type == 'Es2'):
-                    E = Enemy_Est2([64*i,64*j],[64,64])
+                    E = Enemy_Est2([70*i,70*j],[64,64])
                     Enemys_Est2.add(E)
                 elif (type == 'Em1'):
-                    E = Enemy_Movil1([64*i,64*j],[64,64])
+                    E = Enemy_Movil1([70*i,70*j],[64,64])
                     Enemys_Movil1.add(E)
                 elif (type == 'Em2'):
-                    E = Enemy_Movil2([64*i,64*j],[64,64])
+                    E = Enemy_Movil2([70*i,70*j],[64,64])
                     Enemys_Movil2.add(E)
             i+=1
         M_Limite = i

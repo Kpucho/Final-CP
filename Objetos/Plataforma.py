@@ -7,13 +7,13 @@ class Plataforma(pygame.sprite.Sprite):
     def __init__(self, pos, type):
         pygame.sprite.Sprite.__init__(self)
         if type == 's':
-            self.image = pygame.Surface([64,64])
+            self.image = pygame.Surface([70,70])
             self.image.fill(VERDE)
         elif type == 'm':
-            self.image = pygame.Surface([64,64])
+            self.image = pygame.Surface([70,70])
             self.image.fill(BLANCO)
         else:
-            self.image = pygame.Surface([64,32])
+            self.image = pygame.Surface([70,35])
             self.image.fill(ROJO)
 
         self.rect = self.image.get_rect()

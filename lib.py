@@ -3,7 +3,7 @@ import pygame
 Titulo = 'Un nombre mamado'
 ANCHO = 960
 ALTO = 640
-FPS = 40
+FPS = 30
 Limite_der = 576
 Limite_iz = 256
 
