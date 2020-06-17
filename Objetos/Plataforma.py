@@ -20,5 +20,6 @@ class Plataforma(pygame.sprite.Sprite):
         self.rect.x = pos[0]
         self.rect.y = pos[1]
 
-    def update(self,Mundo_velx):
+    def update(self,Mundo_velx, Mundo_vely):
         self.rect.x += Mundo_velx
+        self.rect.y += Mundo_vely

@@ -68,7 +68,7 @@ class Enemy_Movil1(pygame.sprite.Sprite):
         self.rect.y -=1
         return suelo
 
-    def update(self, Plataformas, Mundo_velx):
+    def update(self, Plataformas, Mundo_velx, Mundo_vely):
         self.plataformas = Plataformas
         self.rect.x += self.velx + Mundo_velx
 
@@ -86,7 +86,7 @@ class Enemy_Movil1(pygame.sprite.Sprite):
                     self.accion = 0
 
 
-        self.rect.y+=self.vely
+        self.rect.y+=self.vely + Mundo_vely
 
 
         if self.detectarPiso():

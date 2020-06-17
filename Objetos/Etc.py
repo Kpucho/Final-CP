@@ -35,6 +35,6 @@ class Bala(pygame.sprite.Sprite):
         self.velx = 0
         self.vely = 0
 
-    def update(self, Mundo_velx):
-        self.rect.y += self.vely
+    def update(self, Mundo_velx, Mundo_vely):
+        self.rect.y += self.vely + Mundo_vely
         self.rect.x += self.velx + Mundo_velx

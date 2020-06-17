@@ -54,7 +54,7 @@ def Draw_World(archivo, Plataformas, Jugadores, Enemys_Est1, Enemys_Est2, Enemys
             i+=1
         M_Limite = i
         j+=1
-    return (ANCHO - M_Limite*64)
+    return [(ANCHO - M_Limite*70), ALTO - j*70]
 
 def PLAY(ventana):
     ventana.fill(NEGRO)
@@ -80,11 +80,18 @@ def PLAY(ventana):
 
     Balas_ene = pygame.sprite.Group()
     Mundo_posx = 0
+    Mundo_posy = 0
     Mundo_velx = 0
+    Mundo_vely = 0
 
     """Creacion del mundo"""
-    Mundo_Limite_der = Draw_World(archivo, Plataformas, Jugadores, Enemys_Est1, Enemys_Est2, Enemys_Movil1, Enemys_Movil2)
+    Mundo_Limite_der, Mundo_Limite_abajo = Draw_World(archivo, Plataformas, Jugadores, Enemys_Est1, Enemys_Est2, Enemys_Movil1, Enemys_Movil2)
 
+    if Free_Tutorial == True and Free_Nivel1 == False:
+        while (Mundo_posy > Mundo_Limite_abajo):
+            Mundo_vely = 10
+            Mundo_posy += Mundo_vely
+            Plataformas.update(Mundo_velx, Mundo_vely)
 
     for jugador in Jugadores:
         J = jugador
@@ -116,10 +123,6 @@ def PLAY(ventana):
                 fin = True
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_DOWN or event.key == pygame.K_s:
-                    for j in Jugadores:
-                        print 'Oficial', j.velx
-
-                    print 'cagada', J.velx
                     J.velx = 0
                 if event.key == pygame.K_RIGHT or event.key == pygame.K_d:
                     J.velx = 10
@@ -260,15 +263,17 @@ def PLAY(ventana):
 
         #Refresco de las plataformas para movs
         #Mov Mundo
+        #Mundo_posx, Mundo_velx, inicia en 0
         if J.velx > 0:
             if (J.rect.right) > Limite_der:
                 J.rect.right = (Limite_der)
-                if Mundo_posx > (Mundo_Limite_der):
+                if Mundo_posx > (Mundo_Limite_der): #Mundo_Limite_der = ANCHO - NumeroCOl*70
                     Mundo_velx = -J.velx
                 else:
                     Mundo_velx = 0
             else:
                 Mundo_velx = 0
+
 
         if J.velx < 0:
             if J.rect.left < Limite_iz:
@@ -280,17 +285,45 @@ def PLAY(ventana):
             else:
                 Mundo_velx = 0
 
+        if J.velx == 0:
+            Mundo_velx = 0
         Mundo_posx+=Mundo_velx
 
+        #Mundo_posy, Mundo_vely, inicia en 0
+        if J.vely > 0:
+            if (J.rect.bottom) > Limite_abajo:
+                J.rect.bottom = (Limite_abajo)
+                if Mundo_posx > (Mundo_Limite_abajo): #Mundo_Limite_der = ALTO - NumeroFilas*70
+                    Mundo_vely = -J.velx
+                else:
+                    Mundo_vely = 0
+            else:
+                Mundo_vely = 0
+
+
+        if J.vely < 0:
+            if J.rect.top < Limite_arriba:
+                J.rect.top = Limite_arriba
+                if Mundo_posy > 0:
+                    Mundo_vely = 0
+                else:
+                    Mundo_vely = -J.vely
+            else:
+                Mundo_vely = 0
+
+        if J.vely == 0:
+            Mundo_vely = 0
+        Mundo_posy+=Mundo_vely
+
         #Refresco
-        Plataformas.update(Mundo_velx)
+        Plataformas.update(Mundo_velx, Mundo_vely)
         Jugadores.update(Plataformas)
         espadazos.update()
-        Enemys_Movil1.update(Plataformas, Mundo_velx)
-        Enemys_Est1.update(Plataformas, Mundo_velx)
-        Enemys_Est2.update(Plataformas, Mundo_velx)
-        Enemys_Movil2.update(Plataformas, Mundo_velx)
-        Balas_ene.update(Mundo_velx)
+        Enemys_Movil1.update(Plataformas, Mundo_velx, Mundo_vely)
+        Enemys_Est1.update(Plataformas, Mundo_velx, Mundo_vely)
+        Enemys_Est2.update(Plataformas, Mundo_velx, Mundo_vely)
+        Enemys_Movil2.update(Plataformas, Mundo_velx, Mundo_vely)
+        Balas_ene.update(Mundo_velx, Mundo_vely)
 
         #Dibujado
         ventana.fill(NEGRO)
