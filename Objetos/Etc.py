@@ -1,6 +1,6 @@
 import pygame
 ROJO=[255,0,0]
-
+LIGHT_ROJO = [255,55,55]
 class Golpe(pygame.sprite.Sprite):
     def __init__(self, pos, me, damage = 1):
         pygame.sprite.Sprite.__init__(self)
@@ -38,3 +38,17 @@ class Bala(pygame.sprite.Sprite):
     def update(self, Mundo_velx, Mundo_vely):
         self.rect.y += self.vely + Mundo_vely
         self.rect.x += self.velx + Mundo_velx
+
+class Pincho(pygame.sprite.Sprite):
+    def __init__(self, pos, img = pygame.Surface([70,70])):
+        pygame.sprite.Sprite.__init__(self)
+        self.image = img
+        self.image.fill(LIGHT_ROJO)
+        #Permite cambiar la posicion perteminada que impone get_rect
+        self.rect = self.image.get_rect()
+        self.rect.x = pos[0]
+        self.rect.y= pos[1]
+
+    def update(self, Mundo_velx, Mundo_vely):
+        self.rect.y += Mundo_vely
+        self.rect.x += Mundo_velx

@@ -15,8 +15,43 @@ Free_Nivel1 = False
 Free_Nivel2 = False
 
 def Draw_World(archivo, Plataformas, Jugadores, Enemys_Est1, Enemys_Est2, Enemys_Movil1, Enemys_Movil2):
+    pass
+    return [(M_Limite*70), j*70]
+
+def PLAY(ventana):
+    ventana.fill(NEGRO)
+    pygame.mixer.init(44100, -16, 2, 2048)
+    archivo = ConfigParser.ConfigParser()
+
+    Plataformas = pygame.sprite.Group()
+    Jugadores = pygame.sprite.Group()
+    espadazos = pygame.sprite.Group()
+    Enemys_Movil1 = pygame.sprite.Group()
+    Enemys_Movil2 = pygame.sprite.Group()
+    Enemys_Est1 = pygame.sprite.Group()
+    Enemys_Est2 = pygame.sprite.Group()
+    Pinchos = pygame.sprite.Group()
+
+    Balas_ene = pygame.sprite.Group()
+    Mundo_posx = ANCHO
+    Mundo_posy = ALTO
+    Mundo_velx = 0
+    Mundo_vely = 0
+    Mundo_Limite_der = ANCHO
+    Mundo_Limite_abajo = ALTO
+
+
+    if Free_Tutorial == False:
+        archivo.read('Mapas/Tutorial.map')
+    elif Free_Nivel1 == False:
+        archivo.read('Mapas/Level1.map')
+    elif Free_Nivel2 == False:
+        archivo.read('Mapas/Level2.map')
+    else:
+        """GANA"""
+
+    """Creacion del mundo"""
     Mapa1 = archivo.get('info','mapa').split('\n')
-    M_limite = 0
     j=0
     for fila in Mapa1:
         i=0
@@ -40,74 +75,58 @@ def Draw_World(archivo, Plataformas, Jugadores, Enemys_Est1, Enemys_Est2, Enemys
                     J = Player([70*i,70*j], im_j)
                     Jugadores.add(J)
                 elif (type == 'Es1'):
-                    E = Enemy_Est1([70*i,70*j],[64,64])
+                    E = Enemy_Est1([70*i,70*j],[70,70])
                     Enemys_Est1.add(E)
                 elif (type == 'Es2'):
-                    E = Enemy_Est2([70*i,70*j],[64,64])
+                    E = Enemy_Est2([70*i,70*j],[70,70])
                     Enemys_Est2.add(E)
                 elif (type == 'Em1'):
-                    E = Enemy_Movil1([70*i,70*j],[64,64])
+                    E = Enemy_Movil1([70*i,70*j],[70,70])
                     Enemys_Movil1.add(E)
                 elif (type == 'Em2'):
-                    E = Enemy_Movil2([70*i,70*j],[64,64])
+                    E = Enemy_Movil2([70*i,70*j],[70,70])
                     Enemys_Movil2.add(E)
+                elif (type == 'Pinchos'):
+                    pass
+                    P = Pincho([70*i,70*j])#Pinchos para el lvl1
+                    Pinchos.add(P)
             i+=1
-        M_Limite = i
+        Mundo_Limite_der = i*70
         j+=1
-    return [(ANCHO - M_Limite*70), ALTO - j*70]
 
-def PLAY(ventana):
-    ventana.fill(NEGRO)
-    pygame.mixer.init(44100, -16, 2, 2048)
-    archivo = ConfigParser.ConfigParser()
+    Mundo_Limite_abajo = j*70
 
-    if Free_Tutorial == False:
-        archivo.read('Mapas/Tutorial.map')
-    elif Free_Nivel1 == False:
-        archivo.read('Mapas/Level1.map')
-    elif Free_Nivel2 == False:
-        archivo.read('Mapas/Level2.map')
-    else:
-        """GANA"""
-
-    Plataformas = pygame.sprite.Group()
-    Jugadores = pygame.sprite.Group()
-    espadazos = pygame.sprite.Group()
-    Enemys_Movil1 = pygame.sprite.Group()
-    Enemys_Movil2 = pygame.sprite.Group()
-    Enemys_Est1 = pygame.sprite.Group()
-    Enemys_Est2 = pygame.sprite.Group()
-
-    Balas_ene = pygame.sprite.Group()
-    Mundo_posx = 0
-    Mundo_posy = 0
-    Mundo_velx = 0
-    Mundo_vely = 0
-
-    """Creacion del mundo"""
-    Mundo_Limite_der, Mundo_Limite_abajo = Draw_World(archivo, Plataformas, Jugadores, Enemys_Est1, Enemys_Est2, Enemys_Movil1, Enemys_Movil2)
 
     if Free_Tutorial == True and Free_Nivel1 == False:
-        while (Mundo_posy > Mundo_Limite_abajo):
-            Mundo_vely = 10
-            Mundo_posy += Mundo_vely
+        while (Mundo_posy < Mundo_Limite_abajo):
+            Mundo_vely = -3010
+            Mundo_posy -= Mundo_vely
+            J.rect.y+= -3010
             Plataformas.update(Mundo_velx, Mundo_vely)
+            Enemys_Movil1.update(Plataformas, Mundo_velx, Mundo_vely)
+            Enemys_Est1.update(Plataformas, Mundo_velx, Mundo_vely)
+            Enemys_Est2.update(Plataformas, Mundo_velx, Mundo_vely)
+            Enemys_Movil2.update(Plataformas, Mundo_velx, Mundo_vely)
+            Pinchos.update(Mundo_velx, Mundo_vely)
+            Balas_ene.update(Mundo_velx, Mundo_vely)
+        Mundo_vely = 0
+        if (Mundo_posy > Mundo_Limite_abajo):
+            Mundo_posy = Mundo_Limite_der
 
-    for jugador in Jugadores:
-        J = jugador
-        J.plataformas = Plataformas
+    else:
+        for E in Enemys_Movil1:
+            E.plataformas = Plataformas
 
-    for E in Enemys_Movil1:
-        E.plataformas = Plataformas
+        for E in Enemys_Movil2:
+            E.plataformas = Plataformas
 
-    for E in Enemys_Movil2:
-        E.plataformas = Plataformas
+        for E in Enemys_Est1:
+            E.plataformas = Plataformas
 
-    for E in Enemys_Est1:
-        E.plataformas = Plataformas
+        for E in Enemys_Est2:
+            E.plataformas = Plataformas
 
-    for E in Enemys_Est2:
-        E.plataformas = Plataformas
+    J.plataformas = Plataformas
 
     #fondojuego = pygame.image.load('carmap.png')
     #musica = pygame.mixer.Sound('sonidos/juego.wav')
@@ -165,8 +184,6 @@ def PLAY(ventana):
                 J.velx = 0
 
 #control
-
-
         # Deteccion de cercania
         # if pygame.sprite.collide_circle(r,j):
         #     print 'cerca', r.id
@@ -263,62 +280,69 @@ def PLAY(ventana):
 
         #Refresco de las plataformas para movs
         #Mov Mundo
-        #Mundo_posx, Mundo_velx, inicia en 0
+        #Mundo_posx = ANCHO , Mundo_velx = 0
         if J.velx > 0:
-            if (J.rect.right) > Limite_der:
-                J.rect.right = (Limite_der)
-                if Mundo_posx > (Mundo_Limite_der): #Mundo_Limite_der = ANCHO - NumeroCOl*70
-                    Mundo_velx = -J.velx
+            if Mundo_posx > Mundo_Limite_der:
+                Mundo_posx = Mundo_Limite_der
+            if Mundo_posx == Mundo_Limite_der and J.rect.right > ANCHO:
+                J.rect.right = ANCHO
+            if Mundo_posx != Mundo_Limite_der:
+                if (J.rect.right) > Limite_der:
+                    J.rect.right = (Limite_der)
+                    if Mundo_posx < (Mundo_Limite_der): #Mundo_Limite_der = NumeroCOl*70
+                        Mundo_velx = -J.velx
                 else:
                     Mundo_velx = 0
-            else:
-                Mundo_velx = 0
-
 
         if J.velx < 0:
-            if J.rect.left < Limite_iz:
-                J.rect.left = Limite_iz
-                if Mundo_posx > 0:
-                    Mundo_velx = 0
+            if Mundo_posx < ANCHO:
+                Mundo_posx = ANCHO
+            if Mundo_posx == ANCHO and J.rect.left < 0:
+                J.rect.left = 0
+            if Mundo_posx != ANCHO:
+                if J.rect.left < Limite_iz:
+                    J.rect.left = Limite_iz
+                    if Mundo_posx > ANCHO:
+                        Mundo_velx = -J.velx
                 else:
-                    Mundo_velx = -J.velx
-            else:
-                Mundo_velx = 0
+                    Mundo_velx = 0
 
         if J.velx == 0:
             Mundo_velx = 0
-        Mundo_posx+=Mundo_velx
+        Mundo_posx-=Mundo_velx
 
-        #Mundo_posy, Mundo_vely, inicia en 0
+        #Mundo_posy = ALTO, Mundo_vely = 0, inicia en 0
         if J.vely > 0:
-            if (J.rect.bottom) > Limite_abajo:
-                J.rect.bottom = (Limite_abajo)
-                if Mundo_posx > (Mundo_Limite_abajo): #Mundo_Limite_der = ALTO - NumeroFilas*70
-                    Mundo_vely = -J.velx
+            if Mundo_posy > Mundo_Limite_abajo:
+                Mundo_posy = Mundo_Limite_abajo
+            if Mundo_posy != Mundo_Limite_abajo: #Mundo_Limite_abajo = NumeroFilas*70
+                if (J.rect.bottom) > Limite_abajo:
+                    J.rect.bottom = (Limite_abajo)
+
+                    Mundo_vely = -J.vely
                 else:
                     Mundo_vely = 0
-            else:
-                Mundo_vely = 0
-
 
         if J.vely < 0:
-            if J.rect.top < Limite_arriba:
-                J.rect.top = Limite_arriba
-                if Mundo_posy > 0:
-                    Mundo_vely = 0
-                else:
+            if Mundo_posy < ALTO:
+                Mundo_posy = ALTO
+            if Mundo_posy != ALTO:
+                if J.rect.top < Limite_arriba:
+                    J.rect.top = Limite_arriba
+
                     Mundo_vely = -J.vely
-            else:
-                Mundo_vely = 0
+                else:
+                    Mundo_vely = 0
 
         if J.vely == 0:
             Mundo_vely = 0
-        Mundo_posy+=Mundo_vely
+        Mundo_posy-=Mundo_vely
 
         #Refresco
         Plataformas.update(Mundo_velx, Mundo_vely)
         Jugadores.update(Plataformas)
         espadazos.update()
+        Pinchos.update(Mundo_velx, Mundo_vely)
         Enemys_Movil1.update(Plataformas, Mundo_velx, Mundo_vely)
         Enemys_Est1.update(Plataformas, Mundo_velx, Mundo_vely)
         Enemys_Est2.update(Plataformas, Mundo_velx, Mundo_vely)
@@ -328,6 +352,7 @@ def PLAY(ventana):
         #Dibujado
         ventana.fill(NEGRO)
         Plataformas.draw(ventana)
+        Pinchos.draw(ventana)
         Enemys_Movil1.draw(ventana)
         Enemys_Est1.draw(ventana)
         Enemys_Est2.draw(ventana)

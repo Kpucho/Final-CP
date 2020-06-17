@@ -1,8 +1,8 @@
 import pygame
 """             Constantes                      """
 Titulo = 'Un nombre mamado'
-ANCHO = 960
-ALTO = 640
+ANCHO = 1050
+ALTO = 700
 FPS = 40
 Limite_der = 700
 Limite_iz = 420
@@ -57,17 +57,3 @@ for j in range(12):
 def draw_text(msj, font, color, surface, cord):
     object = font.render(msj, True, color)
     surface.blit(object, cord)
-
-def draw_Mundo1(ventana):
-    j=0
-    for fila in Mapa1:
-        i=0
-        for c in fila:
-            type = string(archivo.get(c,'tipo'))
-            px=int(archivo.get(c,'px'))
-            py=int(archivo.get(c,'px'))
-            col=int(archivo.get(c,'colision'))
-            if col != 0:
-                ventana.blit(Mundo1[px][py],[64*i,64*j])
-            i+=1
-        j+=1
