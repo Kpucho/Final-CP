@@ -1,8 +1,0 @@
-ANCHO 914 px
-ALTO 936 px
-
-13 sprites en ancho
-13 sprites en alto
-
-70.3 px cada sprites de ANCHO
-72 px cada sprites de ALTO

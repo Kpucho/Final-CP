@@ -1,225 +1,500 @@
 import pygame
 import random
 import ConfigParser
-from lib import *
-from Objetos.Player import *
-from Objetos.Plataforma import *
-from Objetos.Enemys_moviles import *
-from Objetos.Enemys_Est import *
-from Objetos.Etc import *
+from Librerias.lib import *
+from Librerias.Enemy import *
+
+#  ################
+#  ................
+
+class Jugador (pygame.sprite.Sprite):
+    def __init__(self, pos, m):
+        pygame.sprite.Sprite.__init__(self)
+        self.m = m
+        self.accion = 0
+        self.cont = 0
+        self.image = self.m[self.accion][self.cont]
+        self.rect = self.image.get_rect()
+        self.rect.x = pos[0]
+        self.rect.y = pos[1]
+        self.radius = 64
+        self.velx = 0
+        self.vely = 0
+        self.techo = False
+        self.piso = False
+        self.der = False
+        self.izq = False
+        self.plataformas = None
+        self.damage = 3
+        self.retroceso = False
+        self.correccionx = 0
+        self.correcciony = 0
+        self.puntene = 0
+        self.vida = 8
+        self.tiempo = 0
+        self.inmunidad = False
+        self.temp_inmunidad = 0
+
+    def lateral_der(self):
+        return self.rect.right
+    def lateral_izq(self):
+        return self.rect.left
+
+    def gravedad(self, g = 1):
+        if self.vely == 0:
+            self.vely = g
+        else:
+            # print 'bajada'
+            self.vely += g
+
+    def detectarPiso(self):
+        print self.vely
+        self.rect.y += (self.vely + 1)
+        lista = pygame.sprite.spritecollide(self, self.plataformas, False)
+        suelo = False
+
+        for p in lista:
+            if self.vely >= 0:
+                if self.rect.bottom > p.rect.top:
+                    suelo = True
+        self.rect.y -= (self.vely + 1)
+        return suelo
+
+    def update(self, plataformas):
+
+        self.plataformas = plataformas
+        # self.rect.x += self.velx
+        ls_pla = pygame.sprite.spritecollide(self, self.plataformas, False)
+
+        for p in ls_pla:
+            if self.velx > 0:
+                if self.rect.right > p.rect.left:
+
+                    self.correccionx = p.rect.left - self.rect.right
+
+                    # print 'correcion x der -', self.correccionx
+                    # print 'objeto', p.rect.left
+                    # print 'jugador', self.rect.right
+
+                    # self.rect.right = p.rect.left
+                    self.velx = 0
+            elif self.rect.left < p.rect.right and self.velx!= 0:
+                self.correccionx = p.rect.right - self.rect.left
+                # print 'correcion x izq -',self.correccionx
+                # self.rect.left = p.rect.right
+                self.velx = 0
 
 
-"""             Validadores de nivel            """
-Free_Tutorial = False
-Free_Nivel1 = False
-Free_Nivel2 = False
 
-def Draw_World(archivo, Plataformas, Jugadores, Enemys_Est1, Enemys_Est2, Enemys_Movil1, Enemys_Movil2):
-    pass
-    return [(M_Limite*70), j*70]
+        # self.rect.y+=self.vely
 
-def PLAY(ventana):
+
+        #Corregir luego
+        if self.detectarPiso():
+            self.piso = True
+            if self.accion != 0 and self.accion != 1:
+                self.velx = 0
+        else:
+            self.piso = False
+            if self.accion == 0:
+                self.accion = 2
+            elif self.accion == 1:
+                self.accion = 3
+
+
+        ls_pla = pygame.sprite.spritecollide(self, self.plataformas, False)
+
+        for p in ls_pla:
+            if self.vely > 0:
+                if self.rect.bottom > p.rect.top:
+                    self.correcciony = p.rect.top - self.rect.bottom
+                    # print 'corre y abajo', self.correcciony
+                    # self.rect.bottom = p.rect.top
+                    self.vely = 0
+                    if self.accion == 2:
+                        self.accion = 0
+                    elif self.accion == 3:
+                        self.accion = 1
+            elif self.rect.top < p.rect.bottom and self.vely!= 0:
+                self.correcciony = p.rect.bottom - self.rect.top
+                # print 'corre y arriba', self.correcciony
+                # self.rect.top = p.rect.bottom
+                self.vely = 0
+
+
+        #Cambio de animacion
+        if self.cont < 8:
+            self.cont += 1
+        else:
+            self.cont = 0
+
+        if self.retroceso:
+            self.retroceso = False
+            self.velx = 0
+
+        if not self.piso:
+            self.gravedad()
+
+        self.tiempo += 1
+
+        if self.inmunidad and self.temp_inmunidad > 0:
+            self.temp_inmunidad -= 1
+        elif self.inmunidad and self.temp_inmunidad <= 0:
+            self.inmunidad = False
+
+        #Cambio de sprite
+        self.image = self.m[self.accion][self.cont]
+
+    def quitar_vida(self):
+        if not self.inmunidad:
+            # pygame.mixer.Channel(1).play(pygame.mixer.Sound('sonidos/efectos/choque.wav'))
+            self.vida -= 1
+            self.inmunidad = True
+            self.temp_inmunidad = 3 * FPS
+
+    def info_jugador(self):
+        for v in range(self.vida + 1):
+            if self.inmunidad == False:
+                ventana.blit(MODIFI[0],[10+64*v,10])
+            elif self.inmunidad == True:
+                ventana.blit(MODIFI[2],[10+64*v,10])
+        fuente = pygame.font.Font(None, 40)
+        draw_text('Puntaje: ' + str(self.tiempo/FPS), fuente, ROJO, ventana, [10, 80])
+
+
+class Modificador(pygame.sprite.Sprite):
+
+    def __init__(self, pos, type):
+        pygame.sprite.Sprite.__init__(self)
+        #tipo 0 es vida
+        #tipo 1 es x2
+        #tipo 2 es inmunidadad
+        #tipo 3 es vivacidad
+        #tipo 4 es lentitud
+        self.tipo = type
+        #self.color = [VERDE, DORADO, BLANCO, ROJO, AZUL]
+        self.image = MODIFI[self.tipo]
+        #self.image = pygame.Surface([32,32])
+        #self.image.fill(self.color[self.tipo])
+
+        # self.image = pygame.image.load('images/sprites/obstaculos.png')
+        # self.image = self.image.subsurface(0, 530, 80, 115)
+        self.rect = self.image.get_rect()
+        self.rect.x = pos[0]
+        self.rect.y = pos[1]
+        self.velx = 0
+        self.vely = 0
+
+    def update(self, fondovel):
+        self.rect.x += fondovel[0]
+        self.rect.y += fondovel[1]
+
+
+class Plataforma(pygame.sprite.Sprite):
+    def __init__(self, pos, m, tipo = 0):
+        pygame.sprite.Sprite.__init__(self)
+        # self.image = pygame.Surface(dim)
+        # self.image.fill(VERDE)
+        self.tipo = tipo
+        self.image = m
+        self.rect = self.image.get_rect()
+        self.rect.x = pos[0]
+        self.rect.y = pos[1]
+        self.velx = 0
+        self.vely = 0
+    def update(self, fondovel):
+
+        self.rect.x += fondovel[0]
+        self.rect.y += fondovel[1]
+
+
+class Golpe(pygame.sprite.Sprite):
+    def __init__(self, pos, me, damage = 3):
+        pygame.sprite.Sprite.__init__(self)
+        self.accion = 0
+        self.cont = 0
+        self.me = me
+        self.fin = False
+        self.image = self.me[self.accion][self.cont]
+        self.rect = self.image.get_rect()
+        self.damage = damage
+        self.rect.x = pos[0]
+        self.rect.y = pos[1]
+
+    def update(self, fondovel):
+        self.rect.x += fondovel[0]
+        self.rect.y += fondovel[1]
+
+        if self.cont <4:
+            self.cont +=1
+        else:
+            self.cont = 0
+            self.fin =True
+        self.image = self.me[self.accion][self.cont]
+
+class Bala(pygame.sprite.Sprite):
+    #Constructor Clase
+    def __init__(self, pos, color = ROJO):
+        pygame.sprite.Sprite.__init__(self)
+        self.image = pygame.Surface([20,20])
+        self.image.fill(color)
+        #Permite cambiar la posicion perteminada que impone get_rect
+        self.rect = self.image.get_rect()
+        self.rect.x = pos[0]
+        self.rect.y= pos[1]
+        self.velx = 0
+        self.vely = 0
+
+    def update(self, fondovel):
+
+        self.rect.x += self.velx + fondovel[0]
+        self.rect.y += self.vely + fondovel[1]
+
+class Bola(pygame.sprite.Sprite):
+    #Constructor Clase
+    def __init__(self, pos, color = ROJO):
+        pygame.sprite.Sprite.__init__(self)
+        self.image = pygame.Surface([20,20])
+        self.image.fill(color)
+        #Permite cambiar la posicion perteminada que impone get_rect
+        self.rect = self.image.get_rect()
+        self.rect.x = pos[0]
+        self.rect.y= pos[1]
+        self.velx = 0
+        self.vely = 0
+
+    def update(self):
+        self.rect.y += self.vely
+        self.rect.x += self.velx
+
+
+def Juego(ventana):
+    #Borra lo anterior
     ventana.fill(NEGRO)
-    pygame.mixer.init(44100, -16, 2, 2048)
-    archivo = ConfigParser.ConfigParser()
-
-    Plataformas = pygame.sprite.Group()
-    Jugadores = pygame.sprite.Group()
+    #Creacion de grupos
+    jugadores = pygame.sprite.Group()
+    plataformas = pygame.sprite.Group()
     espadazos = pygame.sprite.Group()
-    Enemys_Movil1 = pygame.sprite.Group()
-    Enemys_Movil2 = pygame.sprite.Group()
-    Enemys_Est1 = pygame.sprite.Group()
-    Enemys_Est2 = pygame.sprite.Group()
-    Pinchos = pygame.sprite.Group()
+    golpesjefe1 = pygame.sprite.Group()
+    enemigos1 = pygame.sprite.Group()
+    enemigos2 = pygame.sprite.Group()
+    enemigosEst1 = pygame.sprite.Group()
+    enemigosEst2 = pygame.sprite.Group()
+    modificadores = pygame.sprite.Group()
+    jefes1 = pygame.sprite.Group()
+    balas_ene = pygame.sprite.Group()
 
-    Balas_ene = pygame.sprite.Group()
-    Mundo_posx = ANCHO
-    Mundo_posy = ALTO
-    Mundo_velx = 0
-    Mundo_vely = 0
-    Mundo_Limite_der = ANCHO
-    Mundo_Limite_abajo = ALTO
+    #recorte de sprites
+    im_slime = pygame.image.load('Sprites/slime.png')
+    m = []
+    for j in range(6):
+        fila = []
+        for c in range(9):
+            cuadro = im_slime.subsurface(128*c, 128*j, 128, 128)
+            fila.append(cuadro)
+        m.append(fila)
+
+    im_espada = pygame.image.load('Sprites/Espada.png')
+    me = []
+    for j in range(2):
+        fila = []
+        for c in range(5):
+            cuadro = im_espada.subsurface(64*c, 128*j, 64, 128)
+            fila.append(cuadro)
+        me.append(fila)
+
+    #Cargar mapa
 
 
-    if Free_Tutorial == False:
-        archivo.read('Mapas/Tutorial.map')
-    elif Free_Nivel1 == False:
-        archivo.read('Mapas/Level1.map')
-    elif Free_Nivel2 == False:
-        archivo.read('Mapas/Level2.map')
-    else:
-        """GANA"""
 
-    """Creacion del mundo"""
-    Mapa1 = archivo.get('info','mapa').split('\n')
-    j=0
-    for fila in Mapa1:
-        i=0
-        for c in fila:
-            type = archivo.get(c,'tipo')
-            col=int(archivo.get(c,'colision'))
-            if col != 0:
-                if (type == 'Muro'):
-                    #Objeto = Plataforma([64*i,64*j],Mundo1[px][py])
-                    Objeto = Plataforma([70*i,70*j],'m')
-                    Plataformas.add(Objeto)
-                elif (type == 'Suelo'):
-                    #Objeto = Suelo([64*i,64*j],Mundo1[px][py])
-                    Objeto = Plataforma([70*i,70*j],'s')
-                    Plataformas.add(Objeto)
-                elif (type == 'Plataforma'):
-                    #Objeto = Plataforma([64*i,64*j],Mundo1[px][py])
-                    Objeto = Plataforma([70*i,70*j],'p')
-                    Plataformas.add(Objeto)
-                elif (type == 'Jugador'):
-                    J = Player([70*i,70*j], im_j)
-                    Jugadores.add(J)
-                elif (type == 'Es1'):
-                    E = Enemy_Est1([70*i,70*j],[70,70])
-                    Enemys_Est1.add(E)
-                elif (type == 'Es2'):
-                    E = Enemy_Est2([70*i,70*j],[70,70])
-                    Enemys_Est2.add(E)
-                elif (type == 'Em1'):
-                    E = Enemy_Movil1([70*i,70*j],[70,70])
-                    Enemys_Movil1.add(E)
-                elif (type == 'Em2'):
-                    E = Enemy_Movil2([70*i,70*j],[70,70])
-                    Enemys_Movil2.add(E)
-                elif (type == 'Pinchos'):
-                    pass
-                    P = Pincho([70*i,70*j])#Pinchos para el lvl1
-                    Pinchos.add(P)
+    velfondo = [0,0]
+    #fondojuego = pygame.image.load('carmap.png')
+    archivo = ConfigParser.ConfigParser()
+    archivo.read('Mapas/level1.map')
+    #carga de texturas
+    archivo_text = archivo.get('info', 'texturas')
+    img_textura = pygame.image.load(archivo_text)
+    img_textura2 = pygame.image.load('Sprites/pinchos.png')
+    cuadro = img_textura.subsurface(0, 0, 64, 64)
+    pinchos = img_textura2.subsurface(0, 0, 64, 64)
+    #
+    # m = []
+    # for j in range(12):
+    #     fila = []
+    #     for i in range(32):
+    #         cuadro = img_textura.subsurface(i*32, j*32, 32, 32)
+    #         fila.append(cuadro)
+    #     m.append(fila)
+
+    info_mapa = archivo.get('info', 'mapa')
+    mapa = info_mapa.split('\n')
+    j = 0
+    for f in mapa:
+        # print f
+        i = 0
+        for c in f:
+            # print c, archivo.get(c, 'tf'), archivo.get(c, 'tc'), 32*i, 32*j
+            tf = int(archivo.get(c, 'tf'))
+            tc = int(archivo.get(c, 'tc'))
+            col = int(archivo.get(c, 'colision'))
+            #Tipos de plataforma
+            if col > 0:
+                # ventana.blit(m[tf][tc], [32*i, 32*j])
+                tipo = int(archivo.get(c, 'ty'))
+                if tipo == 1:
+                    p = Plataforma([64*i, 64*j],cuadro)
+                    plataformas.add(p)
+                elif tipo == 2:
+                    p = Plataforma([64*i, 64*j],pinchos)
+                    plataformas.add(p)
+                elif tipo == 4:
+                    mod = Modificador([64*i, 64*j], 1)
+                    modificadores.add(mod)
+                elif tipo == 5:
+                    mod = Modificador([64*i, 64*j], 2)
+                    modificadores.add(mod)
             i+=1
-        Mundo_Limite_der = i*70
         j+=1
 
-    Mundo_Limite_abajo = j*70
 
 
-    if Free_Tutorial == True and Free_Nivel1 == False:
-        while (Mundo_posy < Mundo_Limite_abajo):
-            Mundo_vely = -3010
-            Mundo_posy -= Mundo_vely
-            J.rect.y+= -3010
-            Plataformas.update(Mundo_velx, Mundo_vely)
-            Enemys_Movil1.update(Plataformas, Mundo_velx, Mundo_vely)
-            Enemys_Est1.update(Plataformas, Mundo_velx, Mundo_vely)
-            Enemys_Est2.update(Plataformas, Mundo_velx, Mundo_vely)
-            Enemys_Movil2.update(Plataformas, Mundo_velx, Mundo_vely)
-            Pinchos.update(Mundo_velx, Mundo_vely)
-            Balas_ene.update(Mundo_velx, Mundo_vely)
-        Mundo_vely = 0
-        if (Mundo_posy > Mundo_Limite_abajo):
-            Mundo_posy = Mundo_Limite_der
-
-    else:
-        for E in Enemys_Movil1:
-            E.plataformas = Plataformas
-
-        for E in Enemys_Movil2:
-            E.plataformas = Plataformas
-
-        for E in Enemys_Est1:
-            E.plataformas = Plataformas
-
-        for E in Enemys_Est2:
-            E.plataformas = Plataformas
-
-    J.plataformas = Plataformas
-
-    #fondojuego = pygame.image.load('carmap.png')
+    # Musica
+    # pygame.mixer.init(44100, -16, 2, 2048)
     #musica = pygame.mixer.Sound('sonidos/juego.wav')
 
+
+
+
+    j = Jugador([ANCHO/2, ALTO/2], m)
+    jugadores.add(j)
+    j.plataformas = plataformas
+
+    # p = Plataforma([200, 300],[100, 50])
+    # plataformas.add(p)
+    #
+    # p = Plataforma([500, 300],[100, 50])
+    # plataformas.add(p)
+    #
+    # p = Plataforma([0, 576],[1024, 64])
+    # plataformas.add(p)
+    #
+    # p = Plataforma([832, 512],[192, 64])
+    # plataformas.add(p)
+    #
+    # p = Plataforma([0, 512],[64, 64])
+    # plataformas.add(p)
+    #
+    # p = Plataforma([960, 448],[64, 64])
+    # plataformas.add(p)
+
+    eneEst1 = EnemigoEst1([2560, 1088], [64,64], plataformas)
+    enemigosEst1.add(eneEst1)
+
+    eneEst1 = EnemigoEst1([3520, 1024], [64, 64], plataformas)
+    enemigosEst1.add(eneEst1)
+
+    eneEst2 = EnemigoEst2([832, 64], [64, 64], plataformas)
+    enemigosEst2.add(eneEst2)
+
+    eneEst2 = EnemigoEst2([1536, 64], [64, 64], plataformas, 550)
+    enemigosEst2.add(eneEst2)
+
+    eneEst2 = EnemigoEst2([1728, 640], [64, 64], plataformas)
+    enemigosEst2.add(eneEst2)
+
+    # boss = Jefe1([512, 200], [128, 128], plataformas)
+    # jefes1.add(boss)
+
+
+
+
     reloj = pygame.time.Clock()
-    NextLvl= False
+    fin_juego = False
     fin = False
     #musica.play(-1)
     """Eventos"""
-    while not fin and (not NextLvl):
+    while not fin and (not fin_juego):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 fin = True
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_DOWN or event.key == pygame.K_s:
-                    J.velx = 0
+            if event.type ==pygame.KEYDOWN:
                 if event.key == pygame.K_RIGHT or event.key == pygame.K_d:
-                    J.velx = 10
-                    if not J.piso:
-                        J.accion = 2
+                    j.velx = 10
+                    if not j.piso:
+                        j.accion = 2
                     else:
-                        J.vely = 0
-                        J.accion = 0
-                    J.cont = 0
+                        j.vely = 0
+                        j.accion = 0
+                    j.cont = 0
                 if event.key == pygame.K_LEFT or event.key == pygame.K_a:
-                    J.velx = -10
-                    if not J.piso:
-                        J.accion = 3
+                    j.velx = -10
+                    if not j.piso:
+                        j.accion = 3
                     else:
-                        J.vely = 0
-                        J.accion = 1
-                    J.cont = 0
+                        j.vely = 0
+                        j.accion = 1
+                    j.cont = 0
                 if event.key == pygame.K_SPACE:
-                    J.vely = -10
-                    J.piso = False
-                    if J.accion == 0:
-                        J.accion = 2
-                    elif J.accion == 1:
-                        J.accion = 3
-                    J.cont = 0
+                    j.vely = -10
+                    print 'salto'
+                    j.piso = False
+                    if j.accion == 0:
+                        j.accion = 2
+                    elif j.accion == 1:
+                        j.accion = 3
+                    j.cont = 0
                 if event.key == pygame.K_f:
-                    if J.accion == 0:
-                        J.accion = 4
-                        J.cont = 0
-                        espada = Golpe([J.lateral_der(), J.rect.y], im_es)
+                    if j.accion == 0:
+                        j.accion = 4
+                        j.cont = 0
+                        espada = Golpe([j.lateral_der(), j.rect.y], me)
                         espada.accion = 0
                         espadazos.add(espada)
-                    elif J.accion == 1:
-                        J.accion = 5
-                        J.cont = 0
-                        espada = Golpe([J.lateral_izq() - 64, J.rect.y], im_es)
+                    elif j.accion == 1:
+                        j.accion = 5
+                        j.cont = 0
+                        espada = Golpe([j.lateral_izq() - 64, j.rect.y], me)
                         espada.accion = 1
                         espadazos.add(espada)
             if event.type == pygame.KEYUP:
-                J.velx = 0
+                j.velx = 0
 
-#control
+        #control
         # Deteccion de cercania
         # if pygame.sprite.collide_circle(r,j):
         #     print 'cerca', r.id
 
         #Actualizacion de pos del jugador para los enemigos
         #Colisiones radiales
-        for ene2 in Enemys_Movil2:
+        for ene2 in enemigos2:
             if ene2.alerta:
-                ene2.posxjugador = J.rect.centerx
-            elif pygame.sprite.collide_circle(ene2,J):
-                print 'Alerta'
+                ene2.posxjugador = ANCHO/2
+            elif pygame.sprite.collide_circle(ene2,j):
                 ene2.alerta = True
 
         #SECCION DE CREACCION
 
         #crear balas enemigas de ciertos enemigos
         #Crea las balas del enemigo estacionario de nivel 1
-        for eneEst1 in Enemys_Est1:
+        for eneEst1 in enemigosEst1:
             if not eneEst1.ataque:
                 eneEst1.ataque = True
                 #Bala izq
                 bala_e = Bala(eneEst1.get_poscentro())
                 bala_e.velx = -5
-                Balas_ene.add(bala_e)
+                balas_ene.add(bala_e)
                 #Bala der
                 bala_e = Bala(eneEst1.get_poscentro())
                 bala_e.velx = 5
-                Balas_ene.add(bala_e)
+                balas_ene.add(bala_e)
                 #Bala superior
                 bala_e = Bala(eneEst1.get_poscentro())
                 bala_e.vely = -5
-                Balas_ene.add(bala_e)
+                balas_ene.add(bala_e)
 
-        for eneEst2 in Enemys_Est2:
+        for eneEst2 in enemigosEst2:
 
-            if pygame.sprite.collide_circle(eneEst2,J):
+            if pygame.sprite.collide_circle(eneEst2,j):
                 eneEst2.alerta = True
             if not eneEst2.ataque:
                 eneEst2.ataque = True
@@ -229,140 +504,146 @@ def PLAY(ventana):
                 #Bala izq
                 bala_e = Bala(eneEst2.get_poscentro())
                 bala_e.velx = -5
-                Balas_ene.add(bala_e)
+                balas_ene.add(bala_e)
                 #Bala der
                 bala_e = Bala(eneEst2.get_poscentro())
                 bala_e.velx = 5
-                Balas_ene.add(bala_e)
+                balas_ene.add(bala_e)
+
+        for jefe in jefes1:
+            if jefe.alerta:
+                jefe.posxjugador = j.rect.centerx
+                if jefe.poder and (jefe.podercont >= 10*FPS):
+                    if jefe.accion == 0:
+                        jefe.accion = 3
+                        jefe.cont = 0
+                        golpejefe = Golpe([jefe.lateral_der(), jefe.rect.y], me)
+                        golpejefe.accion = 0
+                        golpesjefe1.add(golpejefe)
+                    elif jefe.accion == 1:
+                        jefe.accion = 4
+                        jefe.cont = 0
+                        golpejefe = Golpe([jefe.lateral_izq() - 64, jefe.rect.y], me)
+                        golpejefe.accion = 1
+                        golpesjefe1.add(golpejefe)
+                    jefe.poder = False
+                    jefe.podercont = 0
+            elif pygame.sprite.collide_circle(jefe,j):
+                jefe.alerta = True
 
         #SECCION DE ELIMINACION
         #Eliminacion de balas con las paredes y fuera de area:
-        for bala in Balas_ene:
-            if pygame.sprite.spritecollide(bala, Plataformas, False):
-                Balas_ene.remove(bala)
-            elif pygame.sprite.spritecollide(bala, Jugadores, False):
+        for bala in balas_ene:
+            if pygame.sprite.spritecollide(bala, plataformas, False):
+                balas_ene.remove(bala)
+            elif pygame.sprite.spritecollide(bala, jugadores, False):
                 # Bajar vida al jugador
 
                 #Retroceso del golpe
-                J.retroceso = True
+                j.retroceso = True
                 if bala.velx > 0:
-                    J.velx = 50
+                    j.velx = 50
                 else:
-                    J.velx = -50
-                Balas_ene.remove(bala)
+                    j.velx = -50
+                balas_ene.remove(bala)
             elif pygame.sprite.spritecollide(bala, espadazos, False):
-                Balas_ene.remove(bala)
+                balas_ene.remove(bala)
             elif bala.rect.y < -50 or bala.rect.y > (ALTO + 50):
-                Balas_ene.remove(bala)
+                balas_ene.remove(bala)
             elif bala.rect.x < -50 or bala.rect.x > (ANCHO + 50):
-                Balas_ene.remove(bala)
+                balas_ene.remove(bala)
 
 
         #Eliminacion del enemigo por el espadazo por 1
         for espada in espadazos:
-            ls_ene = pygame.sprite.spritecollide(espada, Enemys_Movil1, False)
+            ls_ene = pygame.sprite.spritecollide(espada, enemigos1, False)
             for enemigo in ls_ene:
-                Enemys_Movil1.remove(enemigo)
+                enemigos1.remove(enemigo)
 
         for espada in espadazos:
-            ls_ene = pygame.sprite.spritecollide(espada, Enemys_Est1, False)
+            ls_ene = pygame.sprite.spritecollide(espada, enemigosEst1, False)
             for enemigo in ls_ene:
-                Enemys_Est1.remove(enemigo)
+                enemigo.life -= j.damage
+                if enemigo.life <= 0:
+                    enemigosEst1.remove(enemigo)
+
+            ls_ene2 = pygame.sprite.spritecollide(espada, enemigosEst2, False)
+
+            for enemigo in ls_ene2:
+                enemigo.life -= j.damage
+                if enemigo.life <= 0:
+                    enemigosEst2.remove(enemigo)
 
         #Eliminacion del golpe del jugador
         for espada in espadazos:
             if espada.fin:
-                if J.accion == 4:
-                    J.accion = 0
-                elif J.accion == 5:
-                    J.accion = 1
+                if j.accion == 4:
+                    j.accion = 0
+                elif j.accion == 5:
+                    j.accion = 1
                 espadazos.remove(espada)
 
-        #Refresco de las plataformas para movs
-        #Mov Mundo
-        #Mundo_posx = ANCHO , Mundo_velx = 0
-        if J.velx > 0:
-            if Mundo_posx > Mundo_Limite_der:
-                Mundo_posx = Mundo_Limite_der
-            if Mundo_posx == Mundo_Limite_der and J.rect.right > ANCHO:
-                J.rect.right = ANCHO
-            if Mundo_posx != Mundo_Limite_der:
-                if (J.rect.right) > Limite_der:
-                    J.rect.right = (Limite_der)
-                    if Mundo_posx < (Mundo_Limite_der): #Mundo_Limite_der = NumeroCOl*70
-                        Mundo_velx = -J.velx
-                else:
-                    Mundo_velx = 0
+        ls_mod = ls_ene2 = pygame.sprite.spritecollide(j, modificadores, False)
 
-        if J.velx < 0:
-            if Mundo_posx < ANCHO:
-                Mundo_posx = ANCHO
-            if Mundo_posx == ANCHO and J.rect.left < 0:
-                J.rect.left = 0
-            if Mundo_posx != ANCHO:
-                if J.rect.left < Limite_iz:
-                    J.rect.left = Limite_iz
-                    if Mundo_posx > ANCHO:
-                        Mundo_velx = -J.velx
-                else:
-                    Mundo_velx = 0
+        for mod in ls_mod:
+            if mod.tipo == 1:
+                j.damage += 100
+                modificadores.remove(mod)
+            if mod.tipo == 2:
+                j. inmunidad = True
+                j.temp_inmunidad = 5*FPS
+                modificadores.remove(mod)
 
-        if J.velx == 0:
-            Mundo_velx = 0
-        Mundo_posx-=Mundo_velx
 
-        #Mundo_posy = ALTO, Mundo_vely = 0, inicia en 0
-        if J.vely > 0:
-            if Mundo_posy > Mundo_Limite_abajo:
-                Mundo_posy = Mundo_Limite_abajo
-            if Mundo_posy != Mundo_Limite_abajo: #Mundo_Limite_abajo = NumeroFilas*70
-                if (J.rect.bottom) > Limite_abajo:
-                    J.rect.bottom = (Limite_abajo)
+        # print j.correccionx
+        # print j.correcciony
+        if j.correccionx == 0 and j.correcciony == 0:
+            velfondo = [ -j.velx , - j.vely]
+        if j.correccionx != 0:
+            # print 'corrige x'
+            velfondo[0] =  -j.correccionx
+            j.correccionx = 0
+            # print 'corrige y'
+        if j.correcciony != 0:
+            velfondo[1] = - j.correcciony
+            j.correcciony = 0
 
-                    Mundo_vely = -J.vely
-                else:
-                    Mundo_vely = 0
-
-        if J.vely < 0:
-            if Mundo_posy < ALTO:
-                Mundo_posy = ALTO
-            if Mundo_posy != ALTO:
-                if J.rect.top < Limite_arriba:
-                    J.rect.top = Limite_arriba
-
-                    Mundo_vely = -J.vely
-                else:
-                    Mundo_vely = 0
-
-        if J.vely == 0:
-            Mundo_vely = 0
-        Mundo_posy-=Mundo_vely
+        # print 'x: ',velfondo[0]
+        # print 'y: ', velfondo[1]
 
         #Refresco
-        Plataformas.update(Mundo_velx, Mundo_vely)
-        Jugadores.update(Plataformas)
-        espadazos.update()
-        Pinchos.update(Mundo_velx, Mundo_vely)
-        Enemys_Movil1.update(Plataformas, Mundo_velx, Mundo_vely)
-        Enemys_Est1.update(Plataformas, Mundo_velx, Mundo_vely)
-        Enemys_Est2.update(Plataformas, Mundo_velx, Mundo_vely)
-        Enemys_Movil2.update(Plataformas, Mundo_velx, Mundo_vely)
-        Balas_ene.update(Mundo_velx, Mundo_vely)
+        plataformas.update(velfondo)
+        jugadores.update(plataformas)
+        espadazos.update(velfondo)
+        enemigos1.update(plataformas, velfondo)
+        enemigosEst1.update(plataformas, velfondo)
+        enemigosEst2.update(plataformas, velfondo)
+        enemigos2.update()
+        jefes1.update(plataformas, velfondo)
+        golpesjefe1.update(velfondo)
+        balas_ene.update(velfondo)
+        modificadores.update(velfondo)
 
-        #Dibujado
+
         ventana.fill(NEGRO)
-        Plataformas.draw(ventana)
-        Pinchos.draw(ventana)
-        Enemys_Movil1.draw(ventana)
-        Enemys_Est1.draw(ventana)
-        Enemys_Est2.draw(ventana)
-        Enemys_Movil2.draw(ventana)
-        Jugadores.draw(ventana)
-        Balas_ene.draw(ventana)
+        plataformas.draw(ventana)
+        enemigos1.draw(ventana)
+        enemigosEst1.draw(ventana)
+        enemigosEst2.draw(ventana)
+        enemigos2.draw(ventana)
+        jefes1.draw(ventana)
+        golpesjefe1.draw(ventana)
+        jugadores.draw(ventana)
+        modificadores.draw(ventana)
+        balas_ene.draw(ventana)
         espadazos.draw(ventana)
+        j.info_jugador()
 
         pygame.display.flip()
         reloj.tick(FPS)
+
+    #musica.stop()
+    FinJuego(ventana)
 
 def FinJuego(ventana):
     ventana.fill(NEGRO)
@@ -405,7 +686,7 @@ def FinJuego(ventana):
 
     if not fin:
         #musica.stop()
-        SelectWorld(ventana)
+        Juego(ventana)
 
 def Menu(ventana):
     ventana.fill(NEGRO)
@@ -431,18 +712,24 @@ def Menu(ventana):
 
         #ventana.blit(fondo, [0,0])
         mx, my = pygame.mouse.get_pos()
-        draw_text(Titulo, fuente, BLANCO, ventana, [300, 50])
+        draw_text('Un titulo mamon', fuente, BLANCO, ventana, [300, 50])
         boton1 = pygame.Rect(300, 150, 220, 50)
+        boton2 = pygame.Rect(300, 250, 220, 50)
         boton3 = pygame.Rect(300, 350, 220, 50)
 
         if boton1.collidepoint((mx, my)):
             if click:
                 previo = True
+        if boton2.collidepoint((mx, my)):
+            if click:
+                info_juego = True
         if boton3.collidepoint((mx, my)):
             if click:
                 fin = True
         pygame.draw.rect(ventana, LIGHT_PINK, boton1)
         draw_text('Iniciar', fuente, BLANCO, ventana, [370, 160])
+        pygame.draw.rect(ventana, LIGHT_PINK, boton2)
+        draw_text('Como jugar', fuente, BLANCO, ventana, [350, 260])
         pygame.draw.rect(ventana, LIGHT_PINK, boton3)
         draw_text('Salir', fuente, BLANCO, ventana, [370, 360])
 
@@ -450,72 +737,9 @@ def Menu(ventana):
 
     #musica.stop()
     if (previo):
-        SelectWorld(ventana)
+        Juego(ventana)
     if (info_juego):
         InfoJuego(ventana)
-
-def SelectWorld(ventana):
-    ventana.fill(NEGRO)
-    pygame.font.init()
-    pygame.mixer.init(44100, -16, 2, 2048)
-    fuente = pygame.font.Font(None, 40)
-    #fondo  = pygame.image.load('images/fondo.png')
-    #musica = pygame.mixer.Sound('sonidos/menu.wav')
-    global Free_Tutorial
-    global Free_Nivel1
-    global Free_Nivel2
-    fin = False
-    Tuto = False
-    Lvl1 = False
-    Lvl2 = False
-    click = False
-    #musica.play(-1)
-    while (not fin) and (not Tuto) and (not Lvl1) and (not Lvl2):
-
-        pygame.display.flip()
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                fin = True
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                if event.button == 1:
-                    click = True
-
-        #ventana.blit(fondo, [0,0])
-        mx, my = pygame.mouse.get_pos()
-        draw_text(Titulo, fuente, BLANCO, ventana, [300, 50])
-        boton1 = pygame.Rect(300, 150, 220, 50)
-        boton2 = pygame.Rect(300, 250, 220, 50)
-        boton3 = pygame.Rect(300, 350, 220, 50)
-
-        if boton1.collidepoint((mx, my)):
-            if click:
-                Tuto = True
-        if boton2.collidepoint((mx, my)):
-            if click:
-                Lvl1 = True
-        if boton3.collidepoint((mx, my)):
-            if click:
-                Lvl2 = True
-
-        pygame.draw.rect(ventana, LIGHT_PINK, boton1)
-        draw_text('Tutorial', fuente, BLANCO, ventana, [370, 160])
-        pygame.draw.rect(ventana, LIGHT_PINK, boton2)
-        draw_text('Nivel 1', fuente, BLANCO, ventana, [370, 260])
-        pygame.draw.rect(ventana, LIGHT_PINK, boton3)
-        draw_text('Nivel 2', fuente, BLANCO, ventana, [370, 360])
-
-        click = False
-
-    #musica.stop()
-    if (Tuto==True):
-        PLAY(ventana)
-    elif (Lvl1 == True):
-        Free_Tutorial = True
-        PLAY(ventana)
-    elif (Lvl2 == True):
-        Free_Tutorial = True
-        Free_Nivel1 = True
-        PLAY(ventana)
 
 def InfoJuego(ventana):
     ventana.fill(NEGRO)
@@ -561,7 +785,13 @@ def InfoJuego(ventana):
 
     #musica.stop()
     if (iniciar):
-        SelectWorld(ventana)
+        Juego(ventana)
+
+
+
+
+
+
 
 if __name__ == '__main__':
     ventana = pygame.display.set_mode([ANCHO,ALTO])
