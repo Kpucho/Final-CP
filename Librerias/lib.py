@@ -16,7 +16,7 @@ LIGHT_PINK = [212, 159, 183]
 
 FPS = 40
 
-
+Titulo = "Slappy's adventures"
 im_modificadores = pygame.image.load('Sprites/modificadores.png')
 MODIFI = []
 for c in range(3):
