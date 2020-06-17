@@ -42,8 +42,8 @@ class Player(pygame.sprite.Sprite):
         self.rect.y -=1
         return suelo
 
-    def update(self):
-
+    def update(self, Plataformas):
+        self.plataformas = Plataformas
         self.rect.x += self.velx
         ls_pla = pygame.sprite.spritecollide(self, self.plataformas, False)
 
